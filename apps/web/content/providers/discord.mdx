@@ -1,0 +1,117 @@
+---
+title: Discord — Configuração Passo a Passo
+---
+
+# Discord — Configuração Passo a Passo
+
+Este guia explica como conectar um servidor do Discord ao Robô MultiPost para publicar mensagens em canais usando um **Bot**.
+
+> **Em Desenvolvimento:** O provedor BYO para Discord está em desenvolvimento. Este guia documenta a configuração do bot para quando o suporte estiver disponível.
+
+---
+
+## Pré-requisitos
+
+- Uma **conta no Discord** ([discord.com](https://discord.com))
+- Acesso ao **Portal de Desenvolvedores do Discord** — [discord.com/developers](https://discord.com/developers/applications)
+- Permissão de **Administrador** no servidor onde deseja publicar
+
+---
+
+## 1. Crie uma Aplicação no Discord
+
+1. Acesse [discord.com/developers/applications](https://discord.com/developers/applications)
+2. Clique em **"New Application"**
+
+![Discord Developer Portal](/docs/discord-developer.png)
+
+3. Preencha:
+   - **Name** — ex: "Robô MultiPost"
+4. Aceite os termos e clique em **"Create"**
+
+---
+
+## 2. Crie um Bot
+
+1. No menu lateral, vá em **"Bot"**
+2. Clique em **"Add Bot"** (se ainda não existir)
+3. Configure:
+   - **Username** — nome do bot que aparecerá no Discord
+   - **Icon** — avatar do bot (opcional)
+4. Na seção **"Privileged Gateway Intents"**:
+   - Habilite **Message Content Intent** (se necessário)
+
+---
+
+## 3. Obtenha o Token do Bot
+
+1. Na seção **"Bot"**, clique em **"Reset Token"**
+2. Copie o **Bot Token** que será exibido
+
+> **Atenção:** O token do bot só é exibido **uma vez**. Guarde-o em local seguro. Se perder, será necessário resetar e gerar um novo.
+
+---
+
+## 4. Configure as Permissões do Bot
+
+1. No menu lateral, vá em **"OAuth2"** > **"URL Generator"**
+2. Em **Scopes**, selecione:
+   - `bot`
+3. Em **Bot Permissions**, selecione:
+   - **Send Messages** — enviar mensagens
+   - **Embed Links** — incorporar links
+   - **Attach Files** — enviar arquivos
+   - **Read Message History** — ler histórico (opcional)
+4. Copie a URL gerada no campo **"Generated URL"**
+
+---
+
+## 5. Adicione o Bot ao Servidor
+
+1. Abra a URL gerada no passo anterior no navegador
+2. Selecione o **servidor** onde deseja adicionar o bot
+3. Clique em **"Authorize"**
+4. Complete o captcha
+
+---
+
+## 6. Cadastre as Credenciais no Dashboard
+
+1. No Robô MultiPost, vá em **Contas** > **"Conectar Conta"**
+2. Selecione **Discord** como plataforma
+3. Selecione o método **BYO Token**
+4. Preencha:
+   - **Bot Token** — cole o token do bot
+   - **Channel ID** — ID do canal onde publicar (copie clicando com botão direito no canal no Discord com Modo de Desenvolvedor ativado)
+5. Clique em **Salvar**
+
+> **Como obter o Channel ID:** No Discord, ative o **Modo de Desenvolvedor** em **Configurações > App Settings > Advanced > Developer Mode**. Depois, clique com o botão direito no canal e selecione **"Copiar ID do Canal"**.
+
+---
+
+## Tipos de Publicação (Planejado)
+
+| Tipo | Descrição | Requisitos |
+|------|-----------|------------|
+| **Texto** | Mensagem de texto no canal | — |
+| **Imagem** | Mensagem com imagem | 1+ imagens |
+| **Embed** | Mensagem com embed rico | Título + descrição |
+
+---
+
+## Considerações Importantes
+
+### Limites de Taxa
+- **5 mensagens por 5 segundos** por canal
+- **50 requisições por segundo** global por bot
+
+### Boas Práticas
+- Use canais dedicados para publicações automatizadas
+- Não envie spam — respeite as regras do servidor
+- Configure notificações do canal adequadamente
+
+---
+
+## Status
+
+> **Este provedor está em desenvolvimento.** O Discord utiliza Bot Token (não OAuth padrão) para publicação. A configuração do bot pode ser feita antecipadamente seguindo os passos acima. A integração completa será disponibilizada em uma atualização futura.

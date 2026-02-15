@@ -1,0 +1,1614 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Robo MultiPost Public API",
+    "version": "1.0.0",
+    "description": "API pública para integrações externas (n8n, WordPress, scripts). Permite criar, agendar e gerenciar posts programaticamente.\n\n## Autenticação\n\nTodas as requisições devem incluir o header `X-API-Key` com uma chave válida.\n\n```\nX-API-Key: rmk_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6\n```\n\nAs chaves são criadas em **Settings → API Keys** no dashboard.\n\n## Rate Limiting\n\nPadrão: **60 requisições por minuto** por chave.\n\nHeaders de resposta:\n- `X-RateLimit-Limit` — máximo de requisições na janela\n- `X-RateLimit-Remaining` — requisições restantes\n- `X-RateLimit-Reset` — timestamp Unix de quando o limite reseta\n\nQuando excedido, retorna `429 Too Many Requests` com header `Retry-After`.",
+    "contact": {
+      "name": "Robo MultiPost"
+    }
+  },
+  "servers": [
+    {
+      "url": "/api/public/v1",
+      "description": "Servidor local / produção"
+    }
+  ],
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Posts",
+      "description": "Criar, listar, atualizar e deletar posts"
+    },
+    {
+      "name": "Media",
+      "description": "Upload de imagens e vídeos"
+    },
+    {
+      "name": "Profiles",
+      "description": "Listar profiles do workspace"
+    },
+    {
+      "name": "Accounts",
+      "description": "Listar contas sociais conectadas"
+    }
+  ],
+  "paths": {
+    "/posts": {
+      "get": {
+        "tags": [
+          "Posts"
+        ],
+        "summary": "Listar posts",
+        "description": "Retorna posts do workspace com filtros e paginação.",
+        "operationId": "listPosts",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "draft",
+                "scheduled",
+                "publishing",
+                "published",
+                "failed"
+              ]
+            },
+            "description": "Filtrar por status do post"
+          },
+          {
+            "name": "profileId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filtrar por ID do profile"
+          },
+          {
+            "name": "dateFrom",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Data mínima de agendamento (ISO 8601)"
+          },
+          {
+            "name": "dateTo",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Data máxima de agendamento (ISO 8601)"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            },
+            "description": "Número da página"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            },
+            "description": "Itens por página (máx. 100)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de posts",
+            "headers": {
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/X-RateLimit-Limit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/X-RateLimit-Remaining"
+              },
+              "X-RateLimit-Reset": {
+                "$ref": "#/components/headers/X-RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "posts": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Post"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/PaginationInfo"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Posts"
+        ],
+        "summary": "Criar post",
+        "description": "Cria um novo post, opcionalmente agendando para publicação futura. Se `scheduledFor` for informado, o post será agendado. Caso contrário, será salvo como rascunho.",
+        "operationId": "createPost",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePostRequest"
+              },
+              "examples": {
+                "scheduled": {
+                  "summary": "Post agendado para Instagram",
+                  "value": {
+                    "content": "Novo post via API! #automacao",
+                    "platforms": [
+                      {
+                        "platform": "instagram",
+                        "accountId": "clx_account_123",
+                        "platformSpecificData": {
+                          "postType": "feed"
+                        }
+                      }
+                    ],
+                    "scheduledFor": "2025-03-15T10:00:00Z",
+                    "timezone": "America/Sao_Paulo"
+                  }
+                },
+                "multiPlatform": {
+                  "summary": "Post multi-conta com YouTube",
+                  "value": {
+                    "content": "Novo vídeo semanal no canal!",
+                    "platforms": [
+                      {
+                        "platform": "youtube",
+                        "accountId": "clx_yt_123",
+                        "platformSpecificData": {
+                          "title": "Episódio 12 - Atualizações do produto",
+                          "visibility": "public",
+                          "madeForKids": false,
+                          "tags": [
+                            "produto",
+                            "roadmap"
+                          ],
+                          "thumbnail": {
+                            "url": "https://example.com/thumbnail.jpg"
+                          }
+                        }
+                      }
+                    ],
+                    "mediaItems": [
+                      {
+                        "type": "video",
+                        "url": "https://example.com/video.mp4"
+                      }
+                    ],
+                    "scheduledFor": "2025-03-15T14:00:00Z"
+                  }
+                },
+                "draft": {
+                  "summary": "Rascunho (sem scheduledFor)",
+                  "value": {
+                    "content": "Rascunho para revisar depois",
+                    "platforms": [
+                      {
+                        "platform": "threads",
+                        "accountId": "clx_threads_789"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Post criado com sucesso",
+            "headers": {
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/X-RateLimit-Limit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/X-RateLimit-Remaining"
+              },
+              "X-RateLimit-Reset": {
+                "$ref": "#/components/headers/X-RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "post": {
+                      "$ref": "#/components/schemas/Post"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/posts/{postId}": {
+      "parameters": [
+        {
+          "name": "postId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "ID do post"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Posts"
+        ],
+        "summary": "Detalhes do post",
+        "description": "Retorna um post com todas as relações (mídia, platform posts, cron job).",
+        "operationId": "getPost",
+        "responses": {
+          "200": {
+            "description": "Detalhes do post",
+            "headers": {
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/X-RateLimit-Limit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/X-RateLimit-Remaining"
+              },
+              "X-RateLimit-Reset": {
+                "$ref": "#/components/headers/X-RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "post": {
+                      "$ref": "#/components/schemas/Post"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Posts"
+        ],
+        "summary": "Atualizar post",
+        "description": "Atualiza campos de um post existente. Todos os campos são opcionais — envie apenas o que deseja alterar.\n\n- `mediaItems`: substitui **todas** as mídias existentes\n- `platforms`: substitui **todos** os `platformPosts`\n- `scheduledFor: null`: remove o agendamento (volta para rascunho)",
+        "operationId": "updatePost",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePostRequest"
+              },
+              "examples": {
+                "reschedule": {
+                  "summary": "Reagendar post",
+                  "value": {
+                    "scheduledFor": "2025-04-01T09:00:00Z",
+                    "timezone": "America/Sao_Paulo"
+                  }
+                },
+                "updateContent": {
+                  "summary": "Atualizar conteúdo",
+                  "value": {
+                    "content": "Texto atualizado do post"
+                  }
+                },
+                "replacePlatforms": {
+                  "summary": "Substituir plataformas do post",
+                  "value": {
+                    "platforms": [
+                      {
+                        "platform": "instagram",
+                        "accountId": "clx_ig_123",
+                        "platformSpecificData": {
+                          "postType": "story"
+                        }
+                      },
+                      {
+                        "platform": "youtube",
+                        "accountId": "clx_yt_456",
+                        "platformSpecificData": {
+                          "title": "Título atualizado para o vídeo",
+                          "visibility": "unlisted",
+                          "madeForKids": false,
+                          "tags": [
+                            "update",
+                            "video"
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                "unschedule": {
+                  "summary": "Voltar para rascunho",
+                  "value": {
+                    "scheduledFor": null
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Post atualizado",
+            "headers": {
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/X-RateLimit-Limit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/X-RateLimit-Remaining"
+              },
+              "X-RateLimit-Reset": {
+                "$ref": "#/components/headers/X-RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "post": {
+                      "$ref": "#/components/schemas/Post"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Posts"
+        ],
+        "summary": "Deletar post",
+        "description": "Remove o post e tenta deletar arquivos de mídia associados do storage.",
+        "operationId": "deletePost",
+        "responses": {
+          "200": {
+            "description": "Post deletado",
+            "headers": {
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/X-RateLimit-Limit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/X-RateLimit-Remaining"
+              },
+              "X-RateLimit-Reset": {
+                "$ref": "#/components/headers/X-RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/media": {
+      "post": {
+        "tags": [
+          "Media"
+        ],
+        "summary": "Upload legado (descontinuado)",
+        "description": "Endpoint legado descontinuado. Use `POST /media/token` para gerar token e faça upload direto para Vercel Blob.",
+        "operationId": "uploadMediaLegacyDeprecated",
+        "deprecated": true,
+        "responses": {
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "410": {
+            "description": "Endpoint removido. Migre para /media/token.",
+            "headers": {
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/X-RateLimit-Limit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/X-RateLimit-Remaining"
+              },
+              "X-RateLimit-Reset": {
+                "$ref": "#/components/headers/X-RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Legacy upload endpoint removed. Request upload token at /api/public/v1/media/token and upload directly to Blob."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/profiles": {
+      "get": {
+        "tags": [
+          "Profiles"
+        ],
+        "summary": "Listar profiles",
+        "description": "Retorna todos os profiles do workspace. Use o `id` de um profile como `profileId` ao criar posts.",
+        "operationId": "listProfiles",
+        "responses": {
+          "200": {
+            "description": "Lista de profiles",
+            "headers": {
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/X-RateLimit-Limit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/X-RateLimit-Remaining"
+              },
+              "X-RateLimit-Reset": {
+                "$ref": "#/components/headers/X-RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "profiles": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Profile"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/accounts": {
+      "get": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Listar contas conectadas",
+        "description": "Retorna as contas sociais conectadas ao workspace. Nenhum token ou credencial é exposto. Use o `id` de uma conta como `accountId` ao criar posts.",
+        "operationId": "listAccounts",
+        "responses": {
+          "200": {
+            "description": "Lista de contas",
+            "headers": {
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/X-RateLimit-Limit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/X-RateLimit-Remaining"
+              },
+              "X-RateLimit-Reset": {
+                "$ref": "#/components/headers/X-RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "accounts": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Account"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/media/token": {
+      "post": {
+        "tags": [
+          "Media"
+        ],
+        "summary": "Gerar token de upload de mídia",
+        "description": "Gera token temporário para upload direto no Vercel Blob. Após receber o token, envie o arquivo do cliente diretamente para o Blob e use a URL retornada no campo `mediaItems` ao criar o post.",
+        "operationId": "createMediaUploadToken",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MediaUploadTokenRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Token de upload gerado com sucesso",
+            "headers": {
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/X-RateLimit-Limit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/X-RateLimit-Remaining"
+              },
+              "X-RateLimit-Reset": {
+                "$ref": "#/components/headers/X-RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MediaUploadTokenResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key",
+        "description": "Chave de API gerada em Settings → API Keys. Formato: `rmk_<32 caracteres hex>` (36 caracteres total)."
+      }
+    },
+    "headers": {
+      "X-RateLimit-Limit": {
+        "description": "Número máximo de requisições por janela de tempo",
+        "schema": {
+          "type": "integer",
+          "example": 60
+        }
+      },
+      "X-RateLimit-Remaining": {
+        "description": "Requisições restantes na janela atual",
+        "schema": {
+          "type": "integer",
+          "example": 55
+        }
+      },
+      "X-RateLimit-Reset": {
+        "description": "Timestamp Unix de quando o limite reseta",
+        "schema": {
+          "type": "integer",
+          "example": 1706745600
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Erro de validação",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ValidationErrorResponse"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "API key ausente, inválida ou expirada",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "examples": {
+              "missing": {
+                "value": {
+                  "error": "Missing X-API-Key header"
+                }
+              },
+              "invalid": {
+                "value": {
+                  "error": "Invalid or expired API key"
+                }
+              }
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Recurso não encontrado",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "error": "Post not found"
+            }
+          }
+        }
+      },
+      "RateLimited": {
+        "description": "Limite de requisições excedido",
+        "headers": {
+          "X-RateLimit-Limit": {
+            "$ref": "#/components/headers/X-RateLimit-Limit"
+          },
+          "X-RateLimit-Remaining": {
+            "description": "Sempre 0 quando rate limited",
+            "schema": {
+              "type": "integer",
+              "example": 0
+            }
+          },
+          "X-RateLimit-Reset": {
+            "$ref": "#/components/headers/X-RateLimit-Reset"
+          },
+          "Retry-After": {
+            "description": "Segundos para aguardar antes de tentar novamente",
+            "schema": {
+              "type": "integer",
+              "example": 30
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "error": "Rate limit exceeded"
+            }
+          }
+        }
+      },
+      "InternalError": {
+        "description": "Erro interno do servidor",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "error": "Internal server error"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "ErrorResponse": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Mensagem de erro"
+          }
+        }
+      },
+      "ValidationErrorResponse": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "Validation failed"
+          },
+          "issues": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "path": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "PaginationInfo": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "example": 1
+          },
+          "limit": {
+            "type": "integer",
+            "example": 20
+          },
+          "total": {
+            "type": "integer",
+            "example": 150
+          },
+          "totalPages": {
+            "type": "integer",
+            "example": 8
+          }
+        }
+      },
+      "Post": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "clx123abc"
+          },
+          "workspaceId": {
+            "type": "string"
+          },
+          "profileId": {
+            "type": "string"
+          },
+          "socialAccountId": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string",
+            "example": "Hello from the API! #automation"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "scheduled",
+              "publishing",
+              "published",
+              "failed"
+            ]
+          },
+          "scheduledFor": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "publishedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "timezone": {
+            "type": "string",
+            "example": "America/Sao_Paulo"
+          },
+          "queueId": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "mediaItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MediaItem"
+            }
+          },
+          "platformPosts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PlatformPost"
+            }
+          },
+          "cronJob": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CronJob"
+              }
+            ]
+          }
+        }
+      },
+      "MediaItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "image",
+              "video"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "key": {
+            "type": "string",
+            "description": "Chave de storage para deleção"
+          },
+          "provider": {
+            "type": "string",
+            "enum": [
+              "VERCEL_BLOB",
+              "S3_COMPAT",
+              "URL_ONLY",
+              "late"
+            ]
+          },
+          "filename": {
+            "type": "string"
+          },
+          "contentType": {
+            "type": "string",
+            "example": "image/jpeg"
+          },
+          "width": {
+            "type": "integer"
+          },
+          "height": {
+            "type": "integer"
+          },
+          "size": {
+            "type": "integer",
+            "description": "Tamanho em bytes"
+          },
+          "duration": {
+            "type": "integer",
+            "description": "Duração em segundos (apenas vídeo)"
+          }
+        }
+      },
+      "PlatformPost": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "platform": {
+            "type": "string",
+            "example": "instagram"
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "publishing",
+              "published",
+              "failed"
+            ]
+          },
+          "customContent": {
+            "type": "string",
+            "nullable": true
+          },
+          "platformData": {
+            "type": "object",
+            "nullable": true
+          },
+          "platformPostId": {
+            "type": "string",
+            "nullable": true,
+            "description": "ID do post na plataforma"
+          },
+          "platformPostUrl": {
+            "type": "string",
+            "nullable": true,
+            "description": "URL do post na plataforma"
+          },
+          "errorMessage": {
+            "type": "string",
+            "nullable": true
+          },
+          "publishedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "CronJob": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "scheduledAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "locked",
+              "completed",
+              "failed"
+            ]
+          },
+          "attempts": {
+            "type": "integer"
+          },
+          "maxAttempts": {
+            "type": "integer"
+          },
+          "lastError": {
+            "type": "string",
+            "nullable": true
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "Profile": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "example": "Meu Perfil"
+          },
+          "lateProfileId": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Account": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "profileId": {
+            "type": "string"
+          },
+          "platform": {
+            "type": "string",
+            "enum": [
+              "instagram",
+              "facebook",
+              "threads",
+              "tiktok",
+              "youtube",
+              "linkedin",
+              "twitter",
+              "pinterest"
+            ]
+          },
+          "connectionMethod": {
+            "type": "string",
+            "enum": [
+              "BYO_OAUTH",
+              "BYO_SYSTEM_USER",
+              "LATE"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "CONNECTED",
+              "DISCONNECTED",
+              "ERROR"
+            ]
+          },
+          "handle": {
+            "type": "string",
+            "example": "@meuhandle"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "username": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string",
+            "nullable": true
+          },
+          "profilePicture": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PlatformMediaReference": {
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "key": {
+            "type": "string"
+          },
+          "provider": {
+            "type": "string",
+            "enum": [
+              "VERCEL_BLOB",
+              "S3_COMPAT",
+              "URL_ONLY",
+              "late"
+            ]
+          },
+          "filename": {
+            "type": "string"
+          },
+          "contentType": {
+            "type": "string"
+          },
+          "size": {
+            "type": "integer"
+          }
+        }
+      },
+      "InstagramPlatformSettings": {
+        "type": "object",
+        "required": [
+          "postType"
+        ],
+        "properties": {
+          "postType": {
+            "type": "string",
+            "enum": [
+              "feed",
+              "reel",
+              "story"
+            ]
+          },
+          "reelShareToFeed": {
+            "type": "boolean"
+          },
+          "reelFeedThumbnail": {
+            "$ref": "#/components/schemas/PlatformMediaReference"
+          }
+        }
+      },
+      "YouTubePlatformSettings": {
+        "type": "object",
+        "required": [
+          "title",
+          "visibility",
+          "madeForKids",
+          "tags"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "public",
+              "private",
+              "unlisted"
+            ]
+          },
+          "madeForKids": {
+            "type": "boolean"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "thumbnail": {
+            "$ref": "#/components/schemas/PlatformMediaReference"
+          }
+        }
+      },
+      "PinterestPlatformSettings": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "boardId": {
+            "type": "string"
+          },
+          "link": {
+            "type": "string",
+            "format": "uri"
+          }
+        }
+      },
+      "PlatformInput": {
+        "type": "object",
+        "required": [
+          "platform",
+          "accountId"
+        ],
+        "properties": {
+          "platform": {
+            "type": "string",
+            "description": "Plataforma da conta selecionada",
+            "enum": [
+              "instagram",
+              "facebook",
+              "threads",
+              "tiktok",
+              "youtube",
+              "linkedin",
+              "twitter",
+              "pinterest"
+            ]
+          },
+          "accountId": {
+            "type": "string",
+            "description": "ID da conta social conectada"
+          },
+          "customContent": {
+            "type": "string",
+            "description": "Texto específico para esta plataforma"
+          },
+          "platformSpecificData": {
+            "description": "Dados específicos da plataforma",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/InstagramPlatformSettings"
+              },
+              {
+                "$ref": "#/components/schemas/YouTubePlatformSettings"
+              },
+              {
+                "$ref": "#/components/schemas/PinterestPlatformSettings"
+              },
+              {
+                "type": "object",
+                "additionalProperties": true
+              }
+            ]
+          }
+        }
+      },
+      "CreatePostRequest": {
+        "type": "object",
+        "required": [
+          "platforms"
+        ],
+        "properties": {
+          "content": {
+            "type": "string",
+            "maxLength": 5000,
+            "description": "Conteúdo do post. Obrigatório se não houver mediaItems."
+          },
+          "profileId": {
+            "type": "string",
+            "description": "Opcional. Deve corresponder ao profile das contas selecionadas."
+          },
+          "platforms": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/PlatformInput"
+            },
+            "description": "Contas/plataformas de destino (mínimo 1)"
+          },
+          "mediaItems": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "type",
+                "url"
+              ],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "image",
+                    "video"
+                  ]
+                },
+                "url": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "key": {
+                  "type": "string"
+                },
+                "provider": {
+                  "type": "string",
+                  "enum": [
+                    "VERCEL_BLOB",
+                    "S3_COMPAT",
+                    "URL_ONLY",
+                    "late"
+                  ]
+                },
+                "filename": {
+                  "type": "string"
+                },
+                "contentType": {
+                  "type": "string"
+                },
+                "width": {
+                  "type": "integer"
+                },
+                "height": {
+                  "type": "integer"
+                },
+                "size": {
+                  "type": "integer"
+                },
+                "duration": {
+                  "type": "integer"
+                }
+              }
+            },
+            "description": "Mídias do post (URLs previamente obtidas via upload)"
+          },
+          "scheduledFor": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Data/hora de agendamento (ISO 8601). Se omitido e sem queue, fica como rascunho."
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Fuso horário (ex: America/Sao_Paulo)"
+          },
+          "queuedFromProfile": {
+            "type": "string",
+            "description": "ID do profile para agendar no próximo slot da fila"
+          }
+        }
+      },
+      "UpdatePostRequest": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "maxLength": 5000
+          },
+          "platforms": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/PlatformInput"
+            },
+            "description": "Substitui integralmente todos os platformPosts do post"
+          },
+          "mediaItems": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "type",
+                "url"
+              ],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "image",
+                    "video"
+                  ]
+                },
+                "url": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "key": {
+                  "type": "string"
+                },
+                "provider": {
+                  "type": "string",
+                  "enum": [
+                    "VERCEL_BLOB",
+                    "S3_COMPAT",
+                    "URL_ONLY",
+                    "late"
+                  ]
+                },
+                "filename": {
+                  "type": "string"
+                },
+                "contentType": {
+                  "type": "string"
+                },
+                "width": {
+                  "type": "integer"
+                },
+                "height": {
+                  "type": "integer"
+                },
+                "size": {
+                  "type": "integer"
+                },
+                "duration": {
+                  "type": "integer"
+                }
+              }
+            },
+            "description": "Substitui TODAS as mídias existentes"
+          },
+          "scheduledFor": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Nova data de agendamento. Envie `null` para voltar a rascunho."
+          },
+          "timezone": {
+            "type": "string"
+          }
+        }
+      },
+      "MediaUploadTokenRequest": {
+        "type": "object",
+        "required": [
+          "filename",
+          "contentType",
+          "size"
+        ],
+        "properties": {
+          "filename": {
+            "type": "string",
+            "description": "Nome original do arquivo.",
+            "example": "video-reel.mp4"
+          },
+          "contentType": {
+            "type": "string",
+            "description": "MIME type do arquivo.",
+            "example": "video/mp4"
+          },
+          "size": {
+            "type": "integer",
+            "description": "Tamanho do arquivo em bytes.",
+            "example": 146800640
+          },
+          "folder": {
+            "type": "string",
+            "enum": [
+              "posts",
+              "thumbnails"
+            ],
+            "default": "posts",
+            "description": "Pasta de destino lógica dentro do storage."
+          }
+        }
+      },
+      "MediaUploadTokenResponse": {
+        "type": "object",
+        "required": [
+          "token",
+          "pathname",
+          "provider",
+          "multipartRecommended",
+          "maxSizeBytes",
+          "expiresAt"
+        ],
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "Token temporário para upload direto no Vercel Blob."
+          },
+          "pathname": {
+            "type": "string",
+            "description": "Pathname reservado para o upload dentro do Blob."
+          },
+          "provider": {
+            "type": "string",
+            "enum": [
+              "VERCEL_BLOB"
+            ]
+          },
+          "multipartRecommended": {
+            "type": "boolean",
+            "description": "Indica se o cliente deve habilitar multipart para o upload."
+          },
+          "maxSizeBytes": {
+            "type": "integer",
+            "description": "Limite máximo permitido para esse tipo de mídia."
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Data de expiração do token (ISO 8601)."
+          }
+        }
+      }
+    }
+  }
+}

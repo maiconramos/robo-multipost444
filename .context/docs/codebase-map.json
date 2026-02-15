@@ -1,0 +1,1304 @@
+{
+  "version": "1.0.0",
+  "generated": "2026-02-07T20:55:35.853Z",
+  "stack": {
+    "primaryLanguage": "typescript",
+    "languages": [
+      "javascript",
+      "typescript"
+    ],
+    "frameworks": [
+      "nextjs"
+    ],
+    "buildTools": [
+      "docker",
+      "docker-compose"
+    ],
+    "testFrameworks": [],
+    "packageManager": "npm",
+    "isMonorepo": false,
+    "hasDocker": true,
+    "hasCI": true
+  },
+  "structure": {
+    "totalFiles": 94,
+    "topDirectories": [
+      {
+        "name": "components.json",
+        "fileCount": 1
+      },
+      {
+        "name": "CONTRIBUTING.md",
+        "fileCount": 1
+      },
+      {
+        "name": "docker-compose.yml",
+        "fileCount": 1
+      },
+      {
+        "name": "Dockerfile",
+        "fileCount": 1
+      },
+      {
+        "name": "docs",
+        "fileCount": 1
+      },
+      {
+        "name": "eslint.config.mjs",
+        "fileCount": 1
+      },
+      {
+        "name": "LICENSE",
+        "fileCount": 1
+      },
+      {
+        "name": "next-env.d.ts",
+        "fileCount": 1
+      },
+      {
+        "name": "next.config.ts",
+        "fileCount": 1
+      },
+      {
+        "name": "package-lock.json",
+        "fileCount": 1
+      },
+      {
+        "name": "package.json",
+        "fileCount": 1
+      },
+      {
+        "name": "postcss.config.mjs",
+        "fileCount": 1
+      },
+      {
+        "name": "public",
+        "fileCount": 10
+      },
+      {
+        "name": "README.md",
+        "fileCount": 1
+      },
+      {
+        "name": "src",
+        "fileCount": 70
+      },
+      {
+        "name": "tsconfig.json",
+        "fileCount": 1
+      }
+    ],
+    "languageDistribution": [
+      {
+        "extension": ".tsx",
+        "count": 48
+      },
+      {
+        "extension": ".ts",
+        "count": 22
+      },
+      {
+        "extension": ".png",
+        "count": 9
+      },
+      {
+        "extension": ".json",
+        "count": 4
+      },
+      {
+        "extension": ".mjs",
+        "count": 2
+      },
+      {
+        "extension": ".md",
+        "count": 2
+      },
+      {
+        "extension": ".yml",
+        "count": 1
+      },
+      {
+        "extension": ".webmanifest",
+        "count": 1
+      },
+      {
+        "extension": ".txt",
+        "count": 1
+      },
+      {
+        "extension": ".css",
+        "count": 1
+      }
+    ]
+  },
+  "architecture": {
+    "layers": [
+      {
+        "name": "Utils",
+        "description": "Shared utilities and helpers",
+        "directories": [
+          "src/lib",
+          "src/components/shared"
+        ],
+        "symbolCount": 17,
+        "dependsOn": []
+      },
+      {
+        "name": "Controllers",
+        "description": "Request handling and routing",
+        "directories": [
+          "src/lib/late-api",
+          "src/app/api/validate-key",
+          "src/components/shared"
+        ],
+        "symbolCount": 15,
+        "dependsOn": []
+      },
+      {
+        "name": "Components",
+        "description": "UI components and views",
+        "directories": [
+          "src/components/posts",
+          "src/components/accounts",
+          "src/components",
+          "src/app",
+          "src/components/ui",
+          "src/app/dashboard",
+          "src/app/callback",
+          "src/app/dashboard/settings",
+          "src/app/dashboard/queue",
+          "src/app/dashboard/compose",
+          "src/app/dashboard/calendar",
+          "src/app/dashboard/accounts",
+          "src/app/callback/_components",
+          "src/app/dashboard/compose/_components",
+          "src/app/dashboard/calendar/_components",
+          "src/app/dashboard/accounts/_components"
+        ],
+        "symbolCount": 55,
+        "dependsOn": []
+      }
+    ],
+    "patterns": [],
+    "entryPoints": [
+      "src/stores/index.ts",
+      "src/hooks/index.ts",
+      "src/lib/late-api/index.ts",
+      "src/components/shared/index.ts",
+      "src/components/posts/index.ts",
+      "src/components/accounts/index.ts"
+    ]
+  },
+  "symbols": {
+    "classes": [],
+    "interfaces": [
+      {
+        "name": "Account",
+        "kind": "interface",
+        "file": "src/hooks/use-accounts.ts",
+        "line": 13,
+        "exported": true
+      },
+      {
+        "name": "AccountHealth",
+        "kind": "interface",
+        "file": "src/hooks/use-accounts.ts",
+        "line": 25,
+        "exported": true
+      },
+      {
+        "name": "CreatePostInput",
+        "kind": "interface",
+        "file": "src/hooks/use-posts.ts",
+        "line": 37,
+        "exported": true
+      },
+      {
+        "name": "FacebookPlatformData",
+        "kind": "interface",
+        "file": "src/lib/late-api/types.ts",
+        "line": 149,
+        "exported": true
+      },
+      {
+        "name": "GoogleBusinessPlatformData",
+        "kind": "interface",
+        "file": "src/lib/late-api/types.ts",
+        "line": 159,
+        "exported": true
+      },
+      {
+        "name": "InstagramPlatformData",
+        "kind": "interface",
+        "file": "src/lib/late-api/types.ts",
+        "line": 142,
+        "exported": true
+      },
+      {
+        "name": "LinkedInPlatformData",
+        "kind": "interface",
+        "file": "src/lib/late-api/types.ts",
+        "line": 154,
+        "exported": true
+      },
+      {
+        "name": "MediaItem",
+        "kind": "interface",
+        "file": "src/hooks/use-posts.ts",
+        "line": 22,
+        "exported": true
+      },
+      {
+        "name": "PinterestPlatformData",
+        "kind": "interface",
+        "file": "src/lib/late-api/types.ts",
+        "line": 136,
+        "exported": true
+      },
+      {
+        "name": "PlatformPost",
+        "kind": "interface",
+        "file": "src/hooks/use-posts.ts",
+        "line": 30,
+        "exported": true
+      },
+      {
+        "name": "PostFilters",
+        "kind": "interface",
+        "file": "src/hooks/use-posts.ts",
+        "line": 13,
+        "exported": true
+      },
+      {
+        "name": "QueueSchedule",
+        "kind": "interface",
+        "file": "src/hooks/use-queue.ts",
+        "line": 23,
+        "exported": true
+      },
+      {
+        "name": "QueueSlot",
+        "kind": "interface",
+        "file": "src/hooks/use-queue.ts",
+        "line": 16,
+        "exported": true
+      },
+      {
+        "name": "TelegramPlatformData",
+        "kind": "interface",
+        "file": "src/lib/late-api/types.ts",
+        "line": 166,
+        "exported": true
+      },
+      {
+        "name": "ThreadPlatformData",
+        "kind": "interface",
+        "file": "src/lib/late-api/types.ts",
+        "line": 171,
+        "exported": true
+      },
+      {
+        "name": "TikTokPlatformData",
+        "kind": "interface",
+        "file": "src/lib/late-api/types.ts",
+        "line": 120,
+        "exported": true
+      },
+      {
+        "name": "UpdatePostInput",
+        "kind": "interface",
+        "file": "src/hooks/use-posts.ts",
+        "line": 47,
+        "exported": true
+      },
+      {
+        "name": "UploadedMedia",
+        "kind": "interface",
+        "file": "src/hooks/use-media.ts",
+        "line": 4,
+        "exported": true
+      },
+      {
+        "name": "YouTubePlatformData",
+        "kind": "interface",
+        "file": "src/lib/late-api/types.ts",
+        "line": 130,
+        "exported": true
+      },
+      {
+        "name": "AccountCardProps",
+        "kind": "interface",
+        "file": "src/components/accounts/account-card.tsx",
+        "line": 12,
+        "exported": false
+      },
+      {
+        "name": "ApiKeyModalProps",
+        "kind": "interface",
+        "file": "src/components/shared/api-key-modal.tsx",
+        "line": 19,
+        "exported": false
+      },
+      {
+        "name": "AppState",
+        "kind": "interface",
+        "file": "src/stores/app-store.ts",
+        "line": 4,
+        "exported": false
+      },
+      {
+        "name": "AuthState",
+        "kind": "interface",
+        "file": "src/stores/auth-store.ts",
+        "line": 16,
+        "exported": false
+      },
+      {
+        "name": "CalendarGridProps",
+        "kind": "interface",
+        "file": "src/app/dashboard/calendar/_components/calendar-grid.tsx",
+        "line": 41,
+        "exported": false
+      },
+      {
+        "name": "CalendarListProps",
+        "kind": "interface",
+        "file": "src/app/dashboard/calendar/_components/calendar-list.tsx",
+        "line": 33,
+        "exported": false
+      },
+      {
+        "name": "ConnectPlatformGridProps",
+        "kind": "interface",
+        "file": "src/app/dashboard/accounts/_components/connect-platform-grid.tsx",
+        "line": 8,
+        "exported": false
+      },
+      {
+        "name": "Entity",
+        "kind": "interface",
+        "file": "src/app/callback/_components/entity-selector.tsx",
+        "line": 10,
+        "exported": false
+      },
+      {
+        "name": "Entity",
+        "kind": "interface",
+        "file": "src/app/callback/_components/callback-client.tsx",
+        "line": 15,
+        "exported": false
+      },
+      {
+        "name": "EntityData",
+        "kind": "interface",
+        "file": "src/app/callback/_components/callback-client.tsx",
+        "line": 21,
+        "exported": false
+      },
+      {
+        "name": "EntitySelectorProps",
+        "kind": "interface",
+        "file": "src/app/callback/_components/entity-selector.tsx",
+        "line": 17,
+        "exported": false
+      },
+      {
+        "name": "LogoProps",
+        "kind": "interface",
+        "file": "src/components/shared/logo.tsx",
+        "line": 4,
+        "exported": false
+      },
+      {
+        "name": "MediaUploaderProps",
+        "kind": "interface",
+        "file": "src/app/dashboard/compose/_components/media-uploader.tsx",
+        "line": 9,
+        "exported": false
+      },
+      {
+        "name": "PlatformIconProps",
+        "kind": "interface",
+        "file": "src/components/shared/platform-icon.tsx",
+        "line": 76,
+        "exported": false
+      },
+      {
+        "name": "PlatformSelectorProps",
+        "kind": "interface",
+        "file": "src/app/dashboard/compose/_components/platform-selector.tsx",
+        "line": 11,
+        "exported": false
+      },
+      {
+        "name": "Post",
+        "kind": "interface",
+        "file": "src/components/posts/post-card.tsx",
+        "line": 27,
+        "exported": false
+      },
+      {
+        "name": "Post",
+        "kind": "interface",
+        "file": "src/app/dashboard/calendar/_components/calendar-list.tsx",
+        "line": 17,
+        "exported": false
+      },
+      {
+        "name": "Post",
+        "kind": "interface",
+        "file": "src/app/dashboard/calendar/_components/calendar-grid.tsx",
+        "line": 15,
+        "exported": false
+      },
+      {
+        "name": "PostCardProps",
+        "kind": "interface",
+        "file": "src/components/posts/post-card.tsx",
+        "line": 42,
+        "exported": false
+      },
+      {
+        "name": "Props",
+        "kind": "interface",
+        "file": "src/components/shared/error-boundary.tsx",
+        "line": 8,
+        "exported": false
+      },
+      {
+        "name": "SchedulePickerProps",
+        "kind": "interface",
+        "file": "src/app/dashboard/compose/_components/schedule-picker.tsx",
+        "line": 21,
+        "exported": false
+      },
+      {
+        "name": "State",
+        "kind": "interface",
+        "file": "src/components/shared/error-boundary.tsx",
+        "line": 13,
+        "exported": false
+      },
+      {
+        "name": "UsageStats",
+        "kind": "interface",
+        "file": "src/stores/auth-store.ts",
+        "line": 4,
+        "exported": false
+      }
+    ],
+    "functions": [
+      {
+        "name": "cn",
+        "kind": "function",
+        "file": "src/lib/utils.ts",
+        "line": 4,
+        "exported": true
+      },
+      {
+        "name": "createLateClient",
+        "kind": "function",
+        "file": "src/lib/late-api/client.ts",
+        "line": 6,
+        "exported": true
+      },
+      {
+        "name": "formatInTimezone",
+        "kind": "function",
+        "file": "src/lib/timezones.ts",
+        "line": 138,
+        "exported": true
+      },
+      {
+        "name": "formatQueueSlot",
+        "kind": "function",
+        "file": "src/hooks/use-queue.ts",
+        "line": 415,
+        "exported": true
+      },
+      {
+        "name": "formatTime",
+        "kind": "function",
+        "file": "src/hooks/use-queue.ts",
+        "line": 37,
+        "exported": true
+      },
+      {
+        "name": "formatTimezoneDisplay",
+        "kind": "function",
+        "file": "src/lib/timezones.ts",
+        "line": 109,
+        "exported": true
+      },
+      {
+        "name": "getAvatarUrl",
+        "kind": "function",
+        "file": "src/lib/avatar.ts",
+        "line": 25,
+        "exported": true
+      },
+      {
+        "name": "getMaxFileSize",
+        "kind": "function",
+        "file": "src/hooks/use-media.ts",
+        "line": 124,
+        "exported": true
+      },
+      {
+        "name": "getMediaType",
+        "kind": "function",
+        "file": "src/hooks/use-media.ts",
+        "line": 100,
+        "exported": true
+      },
+      {
+        "name": "getRandomAvatarStyle",
+        "kind": "function",
+        "file": "src/lib/avatar.ts",
+        "line": 38,
+        "exported": true
+      },
+      {
+        "name": "getServerClient",
+        "kind": "function",
+        "file": "src/lib/late-api/client.ts",
+        "line": 23,
+        "exported": true
+      },
+      {
+        "name": "getSlotTime",
+        "kind": "function",
+        "file": "src/hooks/use-queue.ts",
+        "line": 50,
+        "exported": true
+      },
+      {
+        "name": "getTimezoneOptions",
+        "kind": "function",
+        "file": "src/lib/timezones.ts",
+        "line": 72,
+        "exported": true
+      },
+      {
+        "name": "getUserTimezone",
+        "kind": "function",
+        "file": "src/lib/timezones.ts",
+        "line": 64,
+        "exported": true
+      },
+      {
+        "name": "isValidMediaType",
+        "kind": "function",
+        "file": "src/hooks/use-media.ts",
+        "line": 107,
+        "exported": true
+      },
+      {
+        "name": "isValidTimezone",
+        "kind": "function",
+        "file": "src/lib/timezones.ts",
+        "line": 97,
+        "exported": true
+      },
+      {
+        "name": "Logo",
+        "kind": "function",
+        "file": "src/components/shared/logo.tsx",
+        "line": 16,
+        "exported": true
+      },
+      {
+        "name": "normalizeSlot",
+        "kind": "function",
+        "file": "src/hooks/use-queue.ts",
+        "line": 63,
+        "exported": true
+      },
+      {
+        "name": "parseTime",
+        "kind": "function",
+        "file": "src/hooks/use-queue.ts",
+        "line": 41,
+        "exported": true
+      },
+      {
+        "name": "PlatformBadge",
+        "kind": "function",
+        "file": "src/components/shared/platform-icon.tsx",
+        "line": 110,
+        "exported": true
+      },
+      {
+        "name": "PlatformIcon",
+        "kind": "function",
+        "file": "src/components/shared/platform-icon.tsx",
+        "line": 91,
+        "exported": true
+      },
+      {
+        "name": "POST",
+        "kind": "function",
+        "file": "src/app/api/validate-key/route.ts",
+        "line": 4,
+        "exported": true
+      },
+      {
+        "name": "Providers",
+        "kind": "function",
+        "file": "src/components/providers.tsx",
+        "line": 25,
+        "exported": true
+      },
+      {
+        "name": "RootLayout",
+        "kind": "function",
+        "file": "src/app/layout.tsx",
+        "line": 67,
+        "exported": true
+      },
+      {
+        "name": "useAccounts",
+        "kind": "function",
+        "file": "src/hooks/use-accounts.ts",
+        "line": 34,
+        "exported": true
+      },
+      {
+        "name": "useAccountsByPlatform",
+        "kind": "function",
+        "file": "src/hooks/use-accounts.ts",
+        "line": 133,
+        "exported": true
+      },
+      {
+        "name": "useAccountsHealth",
+        "kind": "function",
+        "file": "src/hooks/use-accounts.ts",
+        "line": 56,
+        "exported": true
+      },
+      {
+        "name": "useCalendarPosts",
+        "kind": "function",
+        "file": "src/hooks/use-posts.ts",
+        "line": 203,
+        "exported": true
+      },
+      {
+        "name": "useConnectAccount",
+        "kind": "function",
+        "file": "src/hooks/use-accounts.ts",
+        "line": 78,
+        "exported": true
+      },
+      {
+        "name": "useCreatePost",
+        "kind": "function",
+        "file": "src/hooks/use-posts.ts",
+        "line": 107,
+        "exported": true
+      },
+      {
+        "name": "useCreateProfile",
+        "kind": "function",
+        "file": "src/hooks/use-profiles.ts",
+        "line": 71,
+        "exported": true
+      },
+      {
+        "name": "useCreateQueue",
+        "kind": "function",
+        "file": "src/hooks/use-queue.ts",
+        "line": 167,
+        "exported": true
+      },
+      {
+        "name": "useCurrentProfileId",
+        "kind": "function",
+        "file": "src/hooks/use-profiles.ts",
+        "line": 42,
+        "exported": true
+      },
+      {
+        "name": "useDeleteAccount",
+        "kind": "function",
+        "file": "src/hooks/use-accounts.ts",
+        "line": 112,
+        "exported": true
+      },
+      {
+        "name": "useDeletePost",
+        "kind": "function",
+        "file": "src/hooks/use-posts.ts",
+        "line": 155,
+        "exported": true
+      },
+      {
+        "name": "useDeleteQueue",
+        "kind": "function",
+        "file": "src/hooks/use-queue.ts",
+        "line": 320,
+        "exported": true
+      },
+      {
+        "name": "useLate",
+        "kind": "function",
+        "file": "src/hooks/use-late.ts",
+        "line": 9,
+        "exported": true
+      },
+      {
+        "name": "useLateClient",
+        "kind": "function",
+        "file": "src/hooks/use-late.ts",
+        "line": 24,
+        "exported": true
+      },
+      {
+        "name": "useMediaPresign",
+        "kind": "function",
+        "file": "src/hooks/use-media.ts",
+        "line": 14,
+        "exported": true
+      },
+      {
+        "name": "useNextQueueSlot",
+        "kind": "function",
+        "file": "src/hooks/use-queue.ts",
+        "line": 139,
+        "exported": true
+      },
+      {
+        "name": "usePost",
+        "kind": "function",
+        "file": "src/hooks/use-posts.ts",
+        "line": 87,
+        "exported": true
+      },
+      {
+        "name": "usePosts",
+        "kind": "function",
+        "file": "src/hooks/use-posts.ts",
+        "line": 58,
+        "exported": true
+      },
+      {
+        "name": "useProfile",
+        "kind": "function",
+        "file": "src/hooks/use-profiles.ts",
+        "line": 51,
+        "exported": true
+      },
+      {
+        "name": "useProfiles",
+        "kind": "function",
+        "file": "src/hooks/use-profiles.ts",
+        "line": 14,
+        "exported": true
+      },
+      {
+        "name": "useQueuePreview",
+        "kind": "function",
+        "file": "src/hooks/use-queue.ts",
+        "line": 117,
+        "exported": true
+      },
+      {
+        "name": "useQueues",
+        "kind": "function",
+        "file": "src/hooks/use-queue.ts",
+        "line": 73,
+        "exported": true
+      },
+      {
+        "name": "useQueueSlots",
+        "kind": "function",
+        "file": "src/hooks/use-queue.ts",
+        "line": 95,
+        "exported": true
+      },
+      {
+        "name": "useRecentPosts",
+        "kind": "function",
+        "file": "src/hooks/use-posts.ts",
+        "line": 224,
+        "exported": true
+      },
+      {
+        "name": "useRetryPost",
+        "kind": "function",
+        "file": "src/hooks/use-posts.ts",
+        "line": 179,
+        "exported": true
+      },
+      {
+        "name": "useScheduledPosts",
+        "kind": "function",
+        "file": "src/hooks/use-posts.ts",
+        "line": 214,
+        "exported": true
+      }
+    ],
+    "types": [
+      {
+        "name": "AvatarStyle",
+        "kind": "type",
+        "file": "src/lib/avatar.ts",
+        "line": 7,
+        "exported": true
+      },
+      {
+        "name": "CommonTimezone",
+        "kind": "type",
+        "file": "src/lib/timezones.ts",
+        "line": 59,
+        "exported": true
+      },
+      {
+        "name": "Platform",
+        "kind": "type",
+        "file": "src/lib/late-api/types.ts",
+        "line": 4,
+        "exported": true
+      },
+      {
+        "name": "PlatformSpecificData",
+        "kind": "type",
+        "file": "src/lib/late-api/types.ts",
+        "line": 178,
+        "exported": true
+      },
+      {
+        "name": "ScheduleType",
+        "kind": "type",
+        "file": "src/app/dashboard/compose/_components/schedule-picker.tsx",
+        "line": 19,
+        "exported": true
+      },
+      {
+        "name": "CallbackStep",
+        "kind": "type",
+        "file": "src/app/callback/_components/callback-client.tsx",
+        "line": 13,
+        "exported": false
+      },
+      {
+        "name": "ViewMode",
+        "kind": "type",
+        "file": "src/app/dashboard/calendar/page.tsx",
+        "line": 44,
+        "exported": false
+      }
+    ],
+    "enums": []
+  },
+  "publicAPI": [
+    {
+      "name": "Account",
+      "kind": "interface",
+      "file": "src/hooks/use-accounts.ts",
+      "line": 13,
+      "exported": true
+    },
+    {
+      "name": "AccountHealth",
+      "kind": "interface",
+      "file": "src/hooks/use-accounts.ts",
+      "line": 25,
+      "exported": true
+    },
+    {
+      "name": "AvatarStyle",
+      "kind": "type",
+      "file": "src/lib/avatar.ts",
+      "line": 7,
+      "exported": true
+    },
+    {
+      "name": "cn",
+      "kind": "function",
+      "file": "src/lib/utils.ts",
+      "line": 4,
+      "exported": true
+    },
+    {
+      "name": "CommonTimezone",
+      "kind": "type",
+      "file": "src/lib/timezones.ts",
+      "line": 59,
+      "exported": true
+    },
+    {
+      "name": "createLateClient",
+      "kind": "function",
+      "file": "src/lib/late-api/client.ts",
+      "line": 6,
+      "exported": true
+    },
+    {
+      "name": "CreatePostInput",
+      "kind": "interface",
+      "file": "src/hooks/use-posts.ts",
+      "line": 37,
+      "exported": true
+    },
+    {
+      "name": "FacebookPlatformData",
+      "kind": "interface",
+      "file": "src/lib/late-api/types.ts",
+      "line": 149,
+      "exported": true
+    },
+    {
+      "name": "formatInTimezone",
+      "kind": "function",
+      "file": "src/lib/timezones.ts",
+      "line": 138,
+      "exported": true
+    },
+    {
+      "name": "formatQueueSlot",
+      "kind": "function",
+      "file": "src/hooks/use-queue.ts",
+      "line": 415,
+      "exported": true
+    },
+    {
+      "name": "formatTime",
+      "kind": "function",
+      "file": "src/hooks/use-queue.ts",
+      "line": 37,
+      "exported": true
+    },
+    {
+      "name": "formatTimezoneDisplay",
+      "kind": "function",
+      "file": "src/lib/timezones.ts",
+      "line": 109,
+      "exported": true
+    },
+    {
+      "name": "getAvatarUrl",
+      "kind": "function",
+      "file": "src/lib/avatar.ts",
+      "line": 25,
+      "exported": true
+    },
+    {
+      "name": "getMaxFileSize",
+      "kind": "function",
+      "file": "src/hooks/use-media.ts",
+      "line": 124,
+      "exported": true
+    },
+    {
+      "name": "getMediaType",
+      "kind": "function",
+      "file": "src/hooks/use-media.ts",
+      "line": 100,
+      "exported": true
+    },
+    {
+      "name": "getRandomAvatarStyle",
+      "kind": "function",
+      "file": "src/lib/avatar.ts",
+      "line": 38,
+      "exported": true
+    },
+    {
+      "name": "getServerClient",
+      "kind": "function",
+      "file": "src/lib/late-api/client.ts",
+      "line": 23,
+      "exported": true
+    },
+    {
+      "name": "getSlotTime",
+      "kind": "function",
+      "file": "src/hooks/use-queue.ts",
+      "line": 50,
+      "exported": true
+    },
+    {
+      "name": "getTimezoneOptions",
+      "kind": "function",
+      "file": "src/lib/timezones.ts",
+      "line": 72,
+      "exported": true
+    },
+    {
+      "name": "getUserTimezone",
+      "kind": "function",
+      "file": "src/lib/timezones.ts",
+      "line": 64,
+      "exported": true
+    },
+    {
+      "name": "GoogleBusinessPlatformData",
+      "kind": "interface",
+      "file": "src/lib/late-api/types.ts",
+      "line": 159,
+      "exported": true
+    },
+    {
+      "name": "InstagramPlatformData",
+      "kind": "interface",
+      "file": "src/lib/late-api/types.ts",
+      "line": 142,
+      "exported": true
+    },
+    {
+      "name": "isValidMediaType",
+      "kind": "function",
+      "file": "src/hooks/use-media.ts",
+      "line": 107,
+      "exported": true
+    },
+    {
+      "name": "isValidTimezone",
+      "kind": "function",
+      "file": "src/lib/timezones.ts",
+      "line": 97,
+      "exported": true
+    },
+    {
+      "name": "LinkedInPlatformData",
+      "kind": "interface",
+      "file": "src/lib/late-api/types.ts",
+      "line": 154,
+      "exported": true
+    },
+    {
+      "name": "Logo",
+      "kind": "function",
+      "file": "src/components/shared/logo.tsx",
+      "line": 16,
+      "exported": true
+    },
+    {
+      "name": "MediaItem",
+      "kind": "interface",
+      "file": "src/hooks/use-posts.ts",
+      "line": 22,
+      "exported": true
+    },
+    {
+      "name": "normalizeSlot",
+      "kind": "function",
+      "file": "src/hooks/use-queue.ts",
+      "line": 63,
+      "exported": true
+    },
+    {
+      "name": "parseTime",
+      "kind": "function",
+      "file": "src/hooks/use-queue.ts",
+      "line": 41,
+      "exported": true
+    },
+    {
+      "name": "PinterestPlatformData",
+      "kind": "interface",
+      "file": "src/lib/late-api/types.ts",
+      "line": 136,
+      "exported": true
+    },
+    {
+      "name": "Platform",
+      "kind": "type",
+      "file": "src/lib/late-api/types.ts",
+      "line": 4,
+      "exported": true
+    },
+    {
+      "name": "PlatformBadge",
+      "kind": "function",
+      "file": "src/components/shared/platform-icon.tsx",
+      "line": 110,
+      "exported": true
+    },
+    {
+      "name": "PlatformIcon",
+      "kind": "function",
+      "file": "src/components/shared/platform-icon.tsx",
+      "line": 91,
+      "exported": true
+    },
+    {
+      "name": "PlatformPost",
+      "kind": "interface",
+      "file": "src/hooks/use-posts.ts",
+      "line": 30,
+      "exported": true
+    },
+    {
+      "name": "PlatformSpecificData",
+      "kind": "type",
+      "file": "src/lib/late-api/types.ts",
+      "line": 178,
+      "exported": true
+    },
+    {
+      "name": "POST",
+      "kind": "function",
+      "file": "src/app/api/validate-key/route.ts",
+      "line": 4,
+      "exported": true
+    },
+    {
+      "name": "PostFilters",
+      "kind": "interface",
+      "file": "src/hooks/use-posts.ts",
+      "line": 13,
+      "exported": true
+    },
+    {
+      "name": "Providers",
+      "kind": "function",
+      "file": "src/components/providers.tsx",
+      "line": 25,
+      "exported": true
+    },
+    {
+      "name": "QueueSchedule",
+      "kind": "interface",
+      "file": "src/hooks/use-queue.ts",
+      "line": 23,
+      "exported": true
+    },
+    {
+      "name": "QueueSlot",
+      "kind": "interface",
+      "file": "src/hooks/use-queue.ts",
+      "line": 16,
+      "exported": true
+    },
+    {
+      "name": "RootLayout",
+      "kind": "function",
+      "file": "src/app/layout.tsx",
+      "line": 67,
+      "exported": true
+    },
+    {
+      "name": "ScheduleType",
+      "kind": "type",
+      "file": "src/app/dashboard/compose/_components/schedule-picker.tsx",
+      "line": 19,
+      "exported": true
+    },
+    {
+      "name": "TelegramPlatformData",
+      "kind": "interface",
+      "file": "src/lib/late-api/types.ts",
+      "line": 166,
+      "exported": true
+    },
+    {
+      "name": "ThreadPlatformData",
+      "kind": "interface",
+      "file": "src/lib/late-api/types.ts",
+      "line": 171,
+      "exported": true
+    },
+    {
+      "name": "TikTokPlatformData",
+      "kind": "interface",
+      "file": "src/lib/late-api/types.ts",
+      "line": 120,
+      "exported": true
+    },
+    {
+      "name": "UpdatePostInput",
+      "kind": "interface",
+      "file": "src/hooks/use-posts.ts",
+      "line": 47,
+      "exported": true
+    },
+    {
+      "name": "UploadedMedia",
+      "kind": "interface",
+      "file": "src/hooks/use-media.ts",
+      "line": 4,
+      "exported": true
+    },
+    {
+      "name": "useAccounts",
+      "kind": "function",
+      "file": "src/hooks/use-accounts.ts",
+      "line": 34,
+      "exported": true
+    },
+    {
+      "name": "useAccountsByPlatform",
+      "kind": "function",
+      "file": "src/hooks/use-accounts.ts",
+      "line": 133,
+      "exported": true
+    },
+    {
+      "name": "useAccountsHealth",
+      "kind": "function",
+      "file": "src/hooks/use-accounts.ts",
+      "line": 56,
+      "exported": true
+    }
+  ],
+  "dependencies": {
+    "mostImported": [
+      {
+        "file": "/Users/maiconramos/Documents/workspace/robo-multipost/src/hooks/use-late.ts",
+        "importedBy": 5
+      },
+      {
+        "file": "/Users/maiconramos/Documents/workspace/robo-multipost/src/hooks/use-profiles.ts",
+        "importedBy": 3
+      },
+      {
+        "file": "/Users/maiconramos/Documents/workspace/robo-multipost/.next/dev/types/routes.d.ts",
+        "importedBy": 1
+      },
+      {
+        "file": "/Users/maiconramos/Documents/workspace/robo-multipost/src/app/globals.css",
+        "importedBy": 1
+      },
+      {
+        "file": "/Users/maiconramos/Documents/workspace/robo-multipost/src/app/callback/_components/callback-client.tsx",
+        "importedBy": 1
+      },
+      {
+        "file": "/Users/maiconramos/Documents/workspace/robo-multipost/src/app/dashboard/compose/_components/platform-selector.tsx",
+        "importedBy": 1
+      },
+      {
+        "file": "/Users/maiconramos/Documents/workspace/robo-multipost/src/app/dashboard/compose/_components/media-uploader.tsx",
+        "importedBy": 1
+      },
+      {
+        "file": "/Users/maiconramos/Documents/workspace/robo-multipost/src/app/dashboard/compose/_components/schedule-picker.tsx",
+        "importedBy": 1
+      },
+      {
+        "file": "/Users/maiconramos/Documents/workspace/robo-multipost/src/app/dashboard/calendar/_components/calendar-grid.tsx",
+        "importedBy": 1
+      },
+      {
+        "file": "/Users/maiconramos/Documents/workspace/robo-multipost/src/app/dashboard/calendar/_components/calendar-list.tsx",
+        "importedBy": 1
+      },
+      {
+        "file": "/Users/maiconramos/Documents/workspace/robo-multipost/src/app/dashboard/accounts/_components/connect-platform-grid.tsx",
+        "importedBy": 1
+      },
+      {
+        "file": "/Users/maiconramos/Documents/workspace/robo-multipost/src/app/callback/_components/entity-selector.tsx",
+        "importedBy": 1
+      }
+    ]
+  },
+  "stats": {
+    "totalSymbols": 143,
+    "exportedSymbols": 82,
+    "analysisTimeMs": 385
+  }
+}

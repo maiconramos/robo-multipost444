@@ -1,0 +1,167 @@
+---
+title: Facebook — Configuração Passo a Passo
+---
+
+# Facebook — Configuração Passo a Passo
+
+Este guia explica como conectar sua Página do Facebook ao Robô MultiPost usando o modo **BYO (Bring Your Own OAuth)**.
+
+> **Dica:** O Instagram e o Facebook compartilham o mesmo app no Meta for Developers. Se você já configurou o Instagram, pode usar as mesmas credenciais (App ID e App Secret).
+
+---
+
+## Pré-requisitos
+
+- Uma **Página do Facebook** que você administra
+- Uma **conta no Meta for Developers** — [developers.facebook.com](https://developers.facebook.com/)
+
+> **Importante:** O Facebook publica em **Páginas**, não em perfis pessoais. Você precisa ter pelo menos uma Página do Facebook para usar esta integração.
+
+---
+
+## 1. Crie um App no Meta for Developers
+
+Se você já criou um app para o Instagram, pode usar o mesmo. Caso contrário:
+
+1. Acesse [developers.facebook.com](https://developers.facebook.com/)
+2. Clique em **"Meus Apps"** > **"Criar App"**
+
+![Criar App no Meta for Developers](/docs/meta-create-app.png)
+
+3. Selecione **"Outro"** e clique em **Avançar**
+4. Selecione o tipo de app **"Empresa"** (Business)
+5. Preencha o nome, e-mail e conta empresarial
+6. Clique em **"Criar App"**
+
+---
+
+## 2. Configure o Login com Facebook
+
+1. No painel do app, procure por **"Login do Facebook"**
+2. Clique em **"Configurar"**
+3. Selecione **"Login do Facebook para Empresas"** (recomendado)
+
+---
+
+## 3. Configure a URL de Redirecionamento OAuth
+
+Em **Login do Facebook > Configurações**:
+
+1. No campo **"URIs de Redirecionamento OAuth Válidos"**, adicione:
+
+**Produção:**
+```
+https://seu-dominio.com/callback
+```
+
+**Desenvolvimento local:**
+```
+http://localhost:3000/callback
+```
+
+![Configurar Redirect URI](/docs/meta-redirect-uri.png)
+
+---
+
+## 4. Solicite as Permissões Necessárias
+
+No painel do app, vá em **Revisão do App > Permissões e Recursos** e solicite:
+
+| Permissão | Descrição |
+|-----------|-----------|
+| `pages_manage_posts` | Permite publicar conteúdo nas suas Páginas |
+| `pages_read_engagement` | Lê dados de engajamento das Páginas |
+| `pages_show_list` | Lista as Páginas que você administra |
+
+> **Para uso pessoal/testes:** Não é necessário solicitar revisão. Adicione sua conta como **testador** em **Funções > Funções** para ter acesso completo.
+
+---
+
+## 5. Obtenha o App ID e App Secret
+
+1. Vá em **Configurações > Básico**
+2. Copie o **ID do Aplicativo (App ID)**
+3. Clique em **"Mostrar"** ao lado da **Chave Secreta (App Secret)** e copie
+
+![Configurações do App Meta](/docs/meta-app-settings.png)
+
+---
+
+## 6. Cadastre as Credenciais no Dashboard
+
+1. No Robô MultiPost, vá em **Contas** > **"Conectar Conta"**
+2. Selecione **Facebook** como plataforma
+3. Selecione o método **BYO OAuth**
+4. Preencha:
+   - **APP ID** — cole o ID do Aplicativo
+   - **APP SECRET** — cole a Chave Secreta
+5. Clique em **Salvar**
+
+---
+
+## 7. Conecte sua Página do Facebook
+
+1. Clique em **"Conectar"** na conta cadastrada
+2. Você será redirecionado para o Facebook para autorizar
+3. Selecione as **Páginas** que deseja vincular
+4. Conceda as permissões solicitadas
+5. Se possuir múltiplas Páginas, selecione a desejada
+6. Após autorizar, a Página aparecerá na lista de contas
+
+> **Multi-step OAuth:** Se você administra várias Páginas, o sistema permitirá que você escolha qual deseja conectar.
+
+---
+
+## Tipos de Publicação Suportados
+
+| Tipo | Descrição | Requisitos |
+|------|-----------|------------|
+| **Texto** | Publicação apenas com texto | — |
+| **Imagem** | Publicação com foto | 1 imagem |
+| **Vídeo** | Publicação com vídeo | 1 vídeo |
+| **Story** | Story na Página | Imagem ou vídeo |
+
+---
+
+## Modo Live vs Desenvolvimento
+
+> **Importante:** Por padrão, o app é criado em **modo Desenvolvimento**. Neste modo, os posts só são visíveis para administradores e testadores do app.
+
+Para publicar para o público:
+
+1. No painel do app, vá em **Configurações > Básico**
+2. Mude o **Modo do App** de "Desenvolvimento" para **"Live"**
+3. Pode ser necessário completar a **Verificação do Negócio** (Business Verification)
+
+---
+
+## Conexão via System User (Alternativa)
+
+Para contas gerenciadas por agências ou Business Managers:
+
+1. No dashboard, selecione o método **BYO Usuário do Sistema**
+2. Cole o **System User Token** gerado no Meta Business Suite
+3. O sistema validará o token e listará as Páginas disponíveis
+4. Selecione a Página desejada
+
+---
+
+## Solução de Problemas
+
+### Erro "Invalid redirect_uri"
+- Verifique se o callback URL está configurado em **Login do Facebook > Configurações**
+- A URL deve corresponder exatamente à exibida no dashboard
+
+### Nenhuma Página aparece após autorização
+- Confirme que você é **administrador** da Página
+- Verifique se concedeu a permissão `pages_show_list` durante a autorização
+- Tente desconectar e reconectar selecionando todas as Páginas
+
+### Posts não aparecem para o público
+- Verifique se o app está em modo **Live** (não Desenvolvimento)
+- Em modo Desenvolvimento, somente testadores veem os posts
+
+### Erro ao publicar
+- Verifique se a permissão `pages_manage_posts` foi concedida
+- Confirme que o token da Página não expirou
+- Para contas em modo de teste, confirme que o usuário é testador do app

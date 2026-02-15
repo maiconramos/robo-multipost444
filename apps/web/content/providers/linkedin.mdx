@@ -1,0 +1,152 @@
+---
+title: LinkedIn — Configuração Passo a Passo
+---
+
+# LinkedIn — Configuração Passo a Passo
+
+Este guia explica como conectar seu perfil pessoal do LinkedIn ao Robô MultiPost usando o modo **BYO (Bring Your Own OAuth)**.
+
+> **LinkedIn vs LinkedIn Page:** Este guia é para publicar no seu **perfil pessoal**. Para publicar em **LinkedIn Pages (páginas de empresa)**, veja o guia [LinkedIn Page](/docs/providers/linkedin-page).
+
+---
+
+## Pré-requisitos
+
+- Uma **conta no LinkedIn** ([linkedin.com](https://www.linkedin.com))
+- Acesso ao **LinkedIn Developers** — [linkedin.com/developers](https://www.linkedin.com/developers/)
+
+---
+
+## 1. Crie um App no LinkedIn Developers
+
+1. Acesse [linkedin.com/developers](https://www.linkedin.com/developers/)
+2. Clique em **"Create App"**
+
+![LinkedIn Developer Portal](/docs/linkedin-developer.png)
+
+3. Preencha:
+   - **App Name** — ex: "Meu Robô de Posts"
+   - **LinkedIn Page** — vincule a uma página (obrigatório, mas pode ser qualquer página que você administre)
+   - **Privacy policy URL** — URL da política de privacidade (pode ser do seu domínio)
+   - **App logo** — faça upload de um logo
+4. Aceite os termos e clique em **"Create App"**
+
+---
+
+## 2. Adicione os Produtos Necessários
+
+1. No app criado, vá na aba **Products**
+2. Solicite acesso aos seguintes produtos:
+
+![LinkedIn Products](/docs/linkedin-products.png)
+
+| Produto | Descrição |
+|---------|-----------|
+| **Share on LinkedIn** | Permite publicar conteúdo no LinkedIn |
+| **Sign In with LinkedIn using OpenID Connect** | Login OAuth |
+
+> **Importante:** Recomenda-se também solicitar acesso à **Advertising API** e preencher o formulário. Sem isso, pode não ser possível renovar tokens expirados.
+
+3. Aguarde a aprovação (geralmente instantânea para Share on LinkedIn)
+
+---
+
+## 3. Configure a URL de Redirecionamento OAuth
+
+1. Vá na aba **Auth**
+2. Na seção **OAuth 2.0 settings**, adicione a URL de callback:
+
+**Produção:**
+```
+https://seu-dominio.com/callback
+```
+
+**Desenvolvimento local:**
+```
+http://localhost:3000/callback
+```
+
+---
+
+## 4. Obtenha o Client ID e Client Secret
+
+Na mesma aba **Auth**:
+
+1. Copie o **Client ID**
+2. Copie o **Client Secret**
+
+> **Atenção:** Guarde o Client Secret em local seguro. Ele será criptografado ao ser armazenado no sistema.
+
+---
+
+## 5. Cadastre as Credenciais no Dashboard
+
+1. No Robô MultiPost, vá em **Contas** > **"Conectar Conta"**
+2. Selecione **LinkedIn** como plataforma
+3. Selecione o método **BYO OAuth**
+4. Preencha:
+   - **APP ID** — cole o Client ID
+   - **APP SECRET** — cole o Client Secret
+5. Clique em **Salvar**
+
+---
+
+## 6. Conecte sua Conta
+
+1. Clique em **"Conectar"** na conta cadastrada
+2. Você será redirecionado para o LinkedIn para autorizar
+3. Clique em **"Allow"** para conceder as permissões
+4. Após autorizar, você será redirecionado de volta ao sistema
+
+---
+
+## Permissões Necessárias
+
+| Scope | Descrição |
+|-------|-----------|
+| `w_member_social` | Permite publicar conteúdo no perfil |
+| `r_liteprofile` | Acesso básico ao perfil (nome, foto) |
+
+---
+
+## Tipos de Publicação Suportados
+
+| Tipo | Descrição | Requisitos |
+|------|-----------|------------|
+| **Texto** | Publicação com texto | — |
+| **Imagem** | Publicação com imagens | Até 20 imagens |
+| **Primeiro Comentário** | Comentário automático no post | Texto adicional |
+
+---
+
+## Sobre Renovação de Tokens
+
+O LinkedIn possui tokens de curta duração. Algumas considerações:
+
+- Tokens de acesso expiram em **60 dias**
+- Para renovar tokens automaticamente, pode ser necessário o produto **Advertising API**
+- Caso o token expire, desconecte e reconecte a conta
+
+> **Dica:** Solicite acesso à Advertising API durante a configuração para garantir a renovação automática de tokens.
+
+---
+
+## Solução de Problemas
+
+### Erro "Invalid redirect_uri"
+- Verifique se o callback URL foi adicionado em **Auth > OAuth 2.0 settings**
+- A URL deve corresponder exatamente (incluindo protocolo http/https)
+
+### Erro "Unauthorized" ao publicar
+- O token pode ter expirado (60 dias)
+- Desconecte e reconecte a conta para obter novo token
+- Solicite acesso à Advertising API para refresh tokens
+
+### App não aparece na lista de produtos
+- Aguarde alguns minutos após criar o app
+- Verifique se completou todos os campos obrigatórios
+
+### Publicação com imagem falha
+- Confirme que a imagem está em formato suportado (JPEG, PNG)
+- O LinkedIn usa um processo de upload em duas etapas (inicializar + upload)
+- Verifique se o armazenamento de mídia está configurado corretamente

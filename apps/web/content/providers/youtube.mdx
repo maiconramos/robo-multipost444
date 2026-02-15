@@ -1,0 +1,194 @@
+---
+title: YouTube — Configuração Passo a Passo
+---
+
+# YouTube — Configuração Passo a Passo
+
+Este guia explica como conectar seu canal do YouTube ao Robô MultiPost usando o modo **BYO (Bring Your Own OAuth)** via Google Cloud.
+
+---
+
+## Pré-requisitos
+
+- Um **canal no YouTube** ([youtube.com](https://www.youtube.com))
+- Uma **conta no Google Cloud** — [console.cloud.google.com](https://console.cloud.google.com/)
+
+> **Nota:** O YouTube aceita apenas publicação de **vídeos**. Publicações de texto ou imagem não são suportadas.
+
+---
+
+## 1. Crie um Projeto no Google Cloud Console
+
+1. Acesse [console.cloud.google.com](https://console.cloud.google.com/)
+2. Aceite os termos de serviço (se for a primeira vez)
+3. Clique em **"Selecionar Projeto"** no topo e depois **"Novo Projeto"**
+
+![Google Cloud Console](/docs/google-cloud-console.png)
+
+4. Preencha:
+   - **Nome do Projeto** — ex: "Robô MultiPost YouTube"
+   - **Organização** — selecione se aplicável
+5. Clique em **"Criar"**
+
+---
+
+## 2. Habilite as APIs do YouTube
+
+1. No menu lateral, vá em **APIs e Serviços > Biblioteca**
+2. Pesquise e habilite as seguintes APIs:
+
+![Habilitar YouTube API](/docs/google-youtube-api.png)
+
+| API | Descrição |
+|-----|-----------|
+| **YouTube Data API v3** | API principal para upload de vídeos |
+| **YouTube Analytics API** | Dados de analytics (opcional) |
+| **YouTube Reporting API** | Relatórios (opcional) |
+
+> **Obrigatória:** Apenas a **YouTube Data API v3** é necessária. As outras são opcionais.
+
+---
+
+## 3. Configure a Tela de Consentimento OAuth
+
+1. Vá em **APIs e Serviços > Tela de Consentimento OAuth**
+2. Selecione **"Externo"** como tipo de usuário
+3. Preencha:
+   - **Nome do App** — ex: "Robô MultiPost"
+   - **E-mail de suporte** — seu e-mail
+   - **Logotipo** — opcional
+4. Na seção **Escopos**, adicione:
+   - `https://www.googleapis.com/auth/youtube.upload`
+5. Em **Usuários de teste**, adicione seu e-mail do Google
+6. Clique em **"Salvar e Continuar"**
+
+---
+
+## 4. Crie as Credenciais OAuth
+
+1. Vá em **APIs e Serviços > Credenciais**
+2. Clique em **"Criar Credenciais"** > **"ID do cliente OAuth"**
+
+![Criar OAuth Credentials](/docs/google-oauth-credentials.png)
+
+3. Configure:
+   - **Tipo de aplicativo:** Aplicativo da Web
+   - **Nome:** "Robô MultiPost"
+   - **URIs de redirecionamento autorizados:**
+
+**Produção:**
+```
+https://seu-dominio.com/callback
+```
+
+**Desenvolvimento local:**
+```
+http://localhost:3000/callback
+```
+
+4. Clique em **"Criar"**
+5. Copie o **Client ID** e o **Client Secret**
+
+---
+
+## 5. Cadastre as Credenciais no Dashboard
+
+1. No Robô MultiPost, vá em **Contas** > **"Conectar Conta"**
+2. Selecione **YouTube** como plataforma
+3. Selecione o método **BYO OAuth**
+4. Preencha:
+   - **APP ID** — cole o Client ID
+   - **APP SECRET** — cole o Client Secret
+5. Clique em **Salvar**
+
+---
+
+## 6. Conecte seu Canal
+
+1. Clique em **"Conectar"** na conta cadastrada
+2. Você será redirecionado para o Google para autorizar
+3. Selecione a conta Google vinculada ao canal do YouTube
+4. Clique em **"Permitir"**
+5. O canal aparecerá conectado na lista
+
+---
+
+## Permissões Necessárias
+
+| Scope | Descrição |
+|-------|-----------|
+| `youtube.upload` | Permite fazer upload de vídeos no canal |
+
+---
+
+## Tipos de Publicação Suportados
+
+| Tipo | Descrição | Requisitos |
+|------|-----------|------------|
+| **Vídeo** | Upload de vídeo com título, descrição e tags | 1 vídeo obrigatório |
+
+### Configurações do Vídeo
+
+Ao criar um post para YouTube, você pode configurar:
+
+| Configuração | Descrição | Padrão |
+|-------------|-----------|--------|
+| **Título** | Título do vídeo (máx. 100 caracteres) | Obrigatório |
+| **Visibilidade** | `public`, `private` ou `unlisted` | `private` |
+| **Made for Kids** | Se o vídeo é destinado a crianças | `false` |
+| **Tags** | Tags para SEO e descoberta | Opcional |
+| **Thumbnail** | Imagem de capa personalizada | Opcional |
+
+---
+
+## Contas de Marca (Brand Accounts)
+
+Se você usa um **Brand Account** no YouTube, configuração adicional é necessária:
+
+1. Acesse [admin.google.com](https://admin.google.com) > **Segurança**
+2. Navegue até **Segurança > Controles de Acesso e Dados > Controles de API**
+3. Selecione **"Gerenciar acesso de apps de terceiros"**
+4. Configure o novo app usando seu **Client ID**
+5. Defina os escopos do app como **"Confiável"**
+6. **Aguarde até 5 horas** para a propagação das configurações
+
+> **Importante:** Ao usar Brand Account, configure o app como **Externo** e adicione-se como usuário de teste.
+
+---
+
+## Publicação em Produção
+
+Para publicar em produção:
+
+1. No Google Cloud Console, vá em **Tela de Consentimento OAuth**
+2. Clique em **"Publicar App"** para mover de teste para produção
+3. Pode ser necessário passar por verificação do Google
+4. Adicione links de política de privacidade e termos de serviço
+
+> **Para testes:** No modo de teste, apenas os usuários de teste cadastrados podem autorizar. O app funciona normalmente para esses usuários.
+
+---
+
+## Solução de Problemas
+
+### Erro "Access denied" ou "App not verified"
+- Se o app está em modo de teste, adicione seu e-mail em **Usuários de teste**
+- Se em produção, complete a verificação do Google
+
+### Erro "YouTube Data API has not been enabled"
+- Verifique se a **YouTube Data API v3** está habilitada no projeto
+- Confirme que está usando o projeto correto no Google Cloud Console
+
+### Upload falha com "quota exceeded"
+- A API do YouTube tem cotas diárias (10.000 unidades por dia por padrão)
+- Um upload de vídeo consome ~1.600 unidades
+- Solicite aumento de cota se necessário
+
+### Brand Account não funciona
+- Siga os passos da seção "Contas de Marca" acima
+- Aguarde até 5 horas após a configuração
+- Verifique se o app está como "Confiável" no admin.google.com
+
+### Token expira e não renova
+- Verifique se a credencial foi criada com `access_type: offline`
+- O sistema faz isso automaticamente, mas se persistir, desconecte e reconecte

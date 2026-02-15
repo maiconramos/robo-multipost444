@@ -1,0 +1,136 @@
+---
+title: Telegram — Configuração Passo a Passo
+---
+
+# Telegram — Configuração Passo a Passo
+
+Este guia explica como conectar um canal ou grupo do Telegram ao Robô MultiPost usando um **Bot do Telegram**.
+
+> **Em Desenvolvimento:** O provedor BYO para Telegram está em desenvolvimento. Este guia documenta a configuração do bot para quando o suporte estiver disponível.
+
+---
+
+## Pré-requisitos
+
+- Uma **conta no Telegram** ([telegram.org](https://telegram.org))
+- Um **canal** ou **grupo** do Telegram onde deseja publicar
+- Permissão de **administrador** no canal/grupo
+
+---
+
+## 1. Crie um Bot com o BotFather
+
+O Telegram usa **bots** para automação, e todos os bots são criados através do [@BotFather](https://t.me/BotFather).
+
+1. Abra o Telegram e pesquise por **@BotFather**
+2. Inicie uma conversa e envie o comando: `/newbot`
+
+![Telegram BotFather](/docs/telegram-botfather.png)
+
+3. Siga as instruções:
+   - **Nome do bot** — ex: "Robô MultiPost Bot"
+   - **Username do bot** — deve terminar com `bot` (ex: `meu_robo_multipost_bot`)
+4. O BotFather retornará um **Token de API** no formato:
+   ```
+   123456789:ABCdefGhIJKlmNoPQRsTUVwxyZ
+   ```
+
+> **Atenção:** Guarde o token em local seguro. Qualquer pessoa com acesso ao token pode controlar o bot.
+
+---
+
+## 2. Adicione o Bot ao Canal/Grupo
+
+1. Abra o **canal** ou **grupo** onde deseja publicar
+2. Vá em **Configurações do Canal/Grupo** > **Administradores**
+3. Clique em **"Adicionar Administrador"**
+4. Pesquise pelo username do bot (ex: `@meu_robo_multipost_bot`)
+5. Adicione o bot como administrador com permissão de **"Publicar Mensagens"**
+
+---
+
+## 3. Obtenha o Chat ID
+
+O Chat ID identifica o canal ou grupo onde o bot publicará.
+
+### Para Canais Públicos
+Use o formato `@nome_do_canal` (ex: `@meucanal`).
+
+### Para Canais/Grupos Privados
+1. Adicione o bot ao canal/grupo
+2. Envie uma mensagem qualquer no canal
+3. Acesse no navegador:
+   ```
+   https://api.telegram.org/bot{SEU_TOKEN}/getUpdates
+   ```
+4. Procure pelo campo `"chat": {"id": -100xxxxxxxxxx}`
+5. O número negativo é o Chat ID
+
+---
+
+## 4. Cadastre as Credenciais no Dashboard
+
+1. No Robô MultiPost, vá em **Contas** > **"Conectar Conta"**
+2. Selecione **Telegram** como plataforma
+3. Selecione o método **BYO Token**
+4. Preencha:
+   - **Bot Token** — cole o token gerado pelo BotFather
+   - **Chat ID** — cole o ID do canal/grupo
+5. Clique em **Salvar**
+
+---
+
+## Tipos de Publicação (Planejado)
+
+| Tipo | Descrição | Requisitos |
+|------|-----------|------------|
+| **Texto** | Mensagem de texto | — |
+| **Imagem** | Mensagem com foto | 1+ imagens |
+| **Vídeo** | Mensagem com vídeo | 1 vídeo |
+
+### Configurações Suportadas
+
+| Configuração | Descrição | Padrão |
+|-------------|-----------|--------|
+| **Parse Mode** | Formatação do texto (HTML) | `HTML` |
+| **Disable Notification** | Enviar sem notificação | `false` |
+
+---
+
+## Formatação de Texto (HTML)
+
+O Telegram suporta HTML para formatação de mensagens:
+
+```html
+<b>Negrito</b>
+<i>Itálico</i>
+<a href="https://exemplo.com">Link</a>
+<code>Código</code>
+<pre>Bloco de código</pre>
+```
+
+---
+
+## Considerações Importantes
+
+### Sem OAuth
+O Telegram **não usa OAuth** — a autenticação é feita via Bot Token. Isso significa:
+- Não há fluxo de redirecionamento
+- O token é gerado uma vez e não expira (a menos que você o revogue)
+- Basta ter o token e o Chat ID para publicar
+
+### Limites de Taxa
+- **30 mensagens por segundo** para bots em geral
+- **20 mensagens por minuto** em grupos/canais
+- Mensagens em massa: máximo 1 por segundo por chat
+
+### Segurança
+- O token do bot é criptografado antes de ser armazenado no banco de dados
+- Nunca compartilhe o token publicamente
+- Se comprometido, use `/revoke` no BotFather para gerar um novo token
+
+---
+
+## Status
+
+> **Este provedor está em desenvolvimento.** A configuração do bot pode ser feita antecipadamente seguindo os passos acima. A integração completa com o Robô MultiPost será disponibilizada em uma atualização futura.

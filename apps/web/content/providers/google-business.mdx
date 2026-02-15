@@ -1,0 +1,171 @@
+---
+title: Google My Business — Configuração Passo a Passo
+---
+
+# Google My Business — Configuração Passo a Passo
+
+Este guia explica como conectar seu perfil do Google Business (Google Meu Negócio) ao Robô MultiPost usando o modo **BYO (Bring Your Own OAuth)**.
+
+> **Em Desenvolvimento:** O provedor BYO para Google My Business está em desenvolvimento. Este guia documenta a configuração para quando o suporte estiver disponível.
+
+> **Aprovação Necessária:** A API do Google My Business **requer aprovação do Google**. Você precisa solicitar acesso antes de usar esta integração.
+
+---
+
+## Pré-requisitos
+
+- Uma **conta Google** com um **perfil verificado no Google Business**
+- Acesso ao **Google Cloud Console** — [console.cloud.google.com](https://console.cloud.google.com/)
+- **Aprovação do Google** para a API do My Business (pode levar dias a semanas)
+
+---
+
+## 1. Solicite Acesso à API
+
+Antes de começar a configuração técnica:
+
+1. Acesse o [formulário de solicitação de acesso do Google My Business API](https://docs.google.com/forms/d/e/1FAIpQLSfb2FiR4kSRhxS1UNpCMcFYV7dtxXFl1bZBV-RxjZHDJfxNjQ/viewform)
+2. Preencha todas as informações solicitadas
+3. Aguarde a aprovação (pode levar de alguns dias a uma semana)
+
+> **Importante:** Sem a aprovação, as APIs não estarão disponíveis para uso.
+
+---
+
+## 2. Crie um Projeto no Google Cloud Console
+
+1. Acesse [console.cloud.google.com](https://console.cloud.google.com/)
+2. Clique em **"Selecionar Projeto"** > **"Novo Projeto"**
+
+![Google Cloud Console](/docs/google-cloud-console.png)
+
+3. Preencha:
+   - **Nome do Projeto** — ex: "Robô MultiPost GMB"
+4. Clique em **"Criar"**
+
+---
+
+## 3. Habilite as APIs Necessárias
+
+1. No menu lateral, vá em **APIs e Serviços > Biblioteca**
+2. Pesquise e habilite as seguintes APIs:
+
+| API | Descrição |
+|-----|-----------|
+| **Google My Business API** | API principal para publicação |
+| **My Business Account Management API** | Gerenciamento de contas |
+| **My Business Business Information API** | Informações do negócio |
+
+> **Obrigatórias:** Todas as três APIs devem estar habilitadas.
+
+---
+
+## 4. Configure a Tela de Consentimento OAuth
+
+1. Vá em **APIs e Serviços > Tela de Consentimento OAuth**
+2. Selecione **"Externo"** como tipo de usuário
+3. Preencha:
+   - **Nome do App** — ex: "Robô MultiPost"
+   - **E-mail de suporte** — seu e-mail
+4. Em **Usuários de teste**, adicione seu e-mail do Google
+5. Clique em **"Salvar e Continuar"**
+
+---
+
+## 5. Crie as Credenciais OAuth
+
+1. Vá em **APIs e Serviços > Credenciais**
+2. Clique em **"Criar Credenciais"** > **"ID do cliente OAuth"**
+
+![Criar OAuth Credentials](/docs/google-oauth-credentials.png)
+
+3. Configure:
+   - **Tipo de aplicativo:** Aplicativo da Web
+   - **Nome:** "Robô MultiPost GMB"
+   - **URIs de redirecionamento autorizados:**
+
+**Produção:**
+```
+https://seu-dominio.com/callback
+```
+
+**Desenvolvimento local:**
+```
+http://localhost:3000/callback
+```
+
+4. Clique em **"Criar"**
+5. Copie o **Client ID** e o **Client Secret**
+
+---
+
+## 6. Cadastre as Credenciais no Dashboard
+
+1. No Robô MultiPost, vá em **Contas** > **"Conectar Conta"**
+2. Selecione **Google My Business** como plataforma
+3. Selecione o método **BYO OAuth**
+4. Preencha:
+   - **APP ID** — cole o Client ID
+   - **APP SECRET** — cole o Client Secret
+5. Clique em **Salvar**
+
+---
+
+## Tipos de Publicação (Planejado)
+
+| Tipo | Descrição | Requisitos |
+|------|-----------|------------|
+| **Atualização** | Post com texto e imagem | Texto obrigatório |
+| **Evento** | Post de evento | Título + data |
+| **Oferta** | Post de promoção | Título + detalhes |
+
+### Configurações Suportadas
+
+| Configuração | Descrição | Padrão |
+|-------------|-----------|--------|
+| **Call to Action** | Botão de ação (Saiba mais, Comprar, etc.) | Opcional |
+| **URL do CTA** | URL de destino do botão | Opcional |
+
+> **Nota:** O Google My Business não suporta publicação de vídeos.
+
+---
+
+## Considerações Importantes
+
+### Aprovação da API
+- A API do Google My Business **requer aprovação manual do Google**
+- O processo pode levar de alguns dias a uma semana
+- Solicite acesso antes de iniciar a configuração técnica
+
+### Perfil Verificado
+- Seu perfil do Google Business deve estar **verificado** pelo Google
+- Perfis não verificados não podem ser acessados via API
+- A verificação pode ser feita via correio, telefone ou e-mail
+
+### Limites
+- Posts no Google Business expiram automaticamente após 6 meses (exceto eventos)
+- Imagens devem ter pelo menos 250x250 pixels
+
+---
+
+## Solução de Problemas
+
+### API não disponível
+- Confirme que solicitou e recebeu aprovação do Google
+- Verifique se as três APIs estão habilitadas no Cloud Console
+- Aguarde a aprovação se ainda estiver pendente
+
+### Perfil não aparece após autorização
+- Confirme que o perfil do Google Business está verificado
+- Verifique se está logado com a conta Google correta (proprietária do perfil)
+
+### Erro ao publicar
+- Verifique se o post segue os requisitos (texto + imagem opcional)
+- Confirme que a imagem tem pelo menos 250x250 pixels
+- Certifique-se de que o perfil está ativo e visível no Google
+
+---
+
+## Status
+
+> **Este provedor está em desenvolvimento.** A configuração no Google Cloud pode ser feita antecipadamente seguindo os passos acima (após aprovação da API). A integração completa com o Robô MultiPost será disponibilizada em uma atualização futura.

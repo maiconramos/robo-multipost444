@@ -1,0 +1,434 @@
+// Robo MultiPost - Database Schema
+// Neon Postgres + Prisma ORM
+//
+// Auth tables (user, session, account, verification) are managed by Better Auth.
+// These models define the application-specific tables.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum SocialPlatform {
+  INSTAGRAM
+  FACEBOOK
+  THREADS
+  TIKTOK
+  YOUTUBE
+  LINKEDIN
+  X
+  PINTEREST
+}
+
+enum ConnectionMethod {
+  BYO_OAUTH
+  BYO_SYSTEM_USER
+  LATE
+}
+
+enum SocialAccountStatus {
+  CONNECTED
+  DISCONNECTED
+  ERROR
+}
+
+enum OAuthFlowStatus {
+  AWAITING_SELECTION
+  COMPLETED
+  EXPIRED
+  FAILED
+}
+
+enum CredentialKind {
+  APP_ID
+  APP_SECRET
+  ACCESS_TOKEN
+  REFRESH_TOKEN
+  SYSTEM_USER_TOKEN
+  LATE_API_KEY
+}
+
+// ──────────────────────────────────────────────
+// Better Auth managed tables
+// ──────────────────────────────────────────────
+
+model user {
+  id            String    @id
+  name          String
+  email         String    @unique
+  emailVerified Boolean
+  image         String?
+  createdAt     DateTime
+  updatedAt     DateTime
+
+  sessions Session[]
+  accounts account[]
+
+  workspaceMembers WorkspaceMember[]
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+
+  user user @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("session")
+}
+
+model account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+
+  user user @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("account")
+}
+
+model verification {
+  id         String    @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verification")
+}
+
+// ──────────────────────────────────────────────
+// Application tables
+// ──────────────────────────────────────────────
+
+model Workspace {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  members     WorkspaceMember[]
+  invites     Invite[]
+  credentials Credential[]
+  accounts    SocialAccount[]
+  posts       Post[]
+  queues      Queue[]
+  profiles    Profile[]
+  apiKeys     ApiKey[]
+  oauthFlows  OAuthFlow[]
+  mediaAssets MediaAsset[]
+
+  @@map("workspace")
+}
+
+model WorkspaceMember {
+  id          String   @id @default(cuid())
+  workspaceId String
+  userId      String
+  role        String   @default("MEMBER") // OWNER, ADMIN, MEMBER
+  createdAt   DateTime @default(now())
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user      user      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, userId])
+  @@map("workspace_member")
+}
+
+model Invite {
+  id          String    @id @default(cuid())
+  workspaceId String
+  email       String
+  token       String    @unique
+  expiresAt   DateTime
+  createdAt   DateTime  @default(now())
+  acceptedAt  DateTime?
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@map("invite")
+}
+
+model Credential {
+  id              String         @id @default(cuid())
+  workspaceId     String
+  socialAccountId String?
+  kind            CredentialKind?
+  encryptedValue  String?
+  last4           String?
+  expiresAt       DateTime?
+  type            String? // legacy workspace-scoped credential type (e.g., ai_api_key)
+  keyEnc          String? // legacy encrypted value for workspace-scoped credentials
+  metadata        Json? // non-sensitive metadata (e.g., provider label)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  workspace     Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  socialAccount SocialAccount? @relation(fields: [socialAccountId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, type])
+  @@unique([socialAccountId, kind])
+  @@index([workspaceId, socialAccountId])
+  @@map("credential")
+}
+
+model Profile {
+  id            String   @id @default(cuid())
+  workspaceId   String
+  name          String
+  lateProfileId String? // Reference to Late profile ID if using Late provider
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  workspace Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  accounts  SocialAccount[]
+  posts     Post[]
+  queues    Queue[]
+
+  @@map("profile")
+}
+
+model SocialAccount {
+  id               String            @id @default(cuid())
+  workspaceId      String
+  profileId        String
+  platform         SocialPlatform
+  connectionMethod ConnectionMethod
+  providerIdentifier String
+  status           SocialAccountStatus @default(CONNECTED)
+  handle           String
+  name             String?
+  meta             Json?
+
+  // Legacy fields kept for compatibility while the app migrates to the new model.
+  platformUserId String?
+  username       String
+  displayName    String?
+  profilePicture String?
+  isActive       Boolean @default(true)
+  providerType   String? // "late" | "byo"
+
+  // Late mode
+  lateAccountId String?
+
+  // BYO mode (encrypted tokens)
+  accessTokenEnc  String?
+  refreshTokenEnc String?
+  tokenExpiresAt  DateTime?
+  oauthMetadata   Json? // non-sensitive OAuth metadata
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  workspace     Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  profile       Profile        @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  credentials   Credential[]
+  posts         Post[]
+  platformPosts PlatformPost[]
+  oauthFlows    OAuthFlow[]
+
+  @@unique([workspaceId, platform, handle, connectionMethod])
+  @@unique([profileId, platform, platformUserId])
+  @@map("social_account")
+}
+
+model OAuthFlow {
+  id              String          @id @default(cuid())
+  workspaceId     String
+  socialAccountId String
+  profileId       String
+  platform        SocialPlatform
+  status          OAuthFlowStatus @default(AWAITING_SELECTION)
+  publicCandidates Json
+  contextEnc      String
+  expiresAt       DateTime
+  completedAt     DateTime?
+  errorMessage    String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  workspace     Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  socialAccount SocialAccount @relation(fields: [socialAccountId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId, status, expiresAt])
+  @@index([workspaceId, socialAccountId, status])
+  @@map("oauth_flow")
+}
+
+model Post {
+  id              String    @id @default(cuid())
+  workspaceId     String
+  profileId       String
+  socialAccountId String?
+  content         String?
+  status          String    @default("draft") // draft, scheduled, publishing, published, failed
+  scheduledFor    DateTime?
+  publishedAt     DateTime?
+  timezone        String?
+  providerType    String? // legacy field, no longer used for provider routing
+  latePostId      String? // Reference to Late post ID if using Late
+  queueId         String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  workspace     Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  profile       Profile        @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  socialAccount SocialAccount? @relation(fields: [socialAccountId], references: [id], onDelete: SetNull)
+  queue         Queue?         @relation(fields: [queueId], references: [id])
+  mediaItems    MediaItem[]
+  platformPosts PlatformPost[]
+  cronJob       CronJob?
+
+  @@map("post")
+}
+
+model MediaItem {
+  id          String  @id @default(cuid())
+  postId      String
+  type        String // "image" | "video"
+  url         String
+  key         String? // storage key for deletion
+  provider    String? // "VERCEL_BLOB" | "S3_COMPAT" | "CLOUDFLARE_R2" | "URL_ONLY" | "late"
+  filename    String?
+  contentType String?
+  width       Int?
+  height      Int?
+  size        Int?
+  duration    Int? // video duration in seconds
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@map("media_item")
+}
+
+model PlatformPost {
+  id              String    @id @default(cuid())
+  postId          String
+  accountId       String
+  platform        String
+  providerIdentifier String
+  status          String    @default("pending") // pending, publishing, published, failed
+  platformPostId  String? // ID from the platform after publishing
+  platformPostUrl String? // URL on the platform
+  errorMessage    String?
+  customContent   String? // Platform-specific content override
+  platformData    Json? // Platform-specific settings (e.g., TikTok privacy)
+  publishedAt     DateTime?
+
+  post    Post          @relation(fields: [postId], references: [id], onDelete: Cascade)
+  account SocialAccount @relation(fields: [accountId], references: [id])
+
+  @@map("platform_post")
+}
+
+model Queue {
+  id          String   @id @default(cuid())
+  profileId   String
+  workspaceId String
+  name        String
+  timezone    String
+  active      Boolean  @default(true)
+  isDefault   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  profile   Profile     @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  workspace Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  slots     QueueSlot[]
+  posts     Post[]
+
+  @@map("queue")
+}
+
+model QueueSlot {
+  id        String @id @default(cuid())
+  queueId   String
+  dayOfWeek Int // 0-6, Sunday = 0
+  time      String // "HH:mm" format
+
+  queue Queue @relation(fields: [queueId], references: [id], onDelete: Cascade)
+
+  @@map("queue_slot")
+}
+
+model CronJob {
+  id          String    @id @default(cuid())
+  postId      String    @unique
+  scheduledAt DateTime
+  status      String    @default("pending") // pending, locked, completed, failed
+  attempts    Int       @default(0)
+  maxAttempts Int       @default(3)
+  lastError   String?
+  lockedAt    DateTime?
+  lockedBy    String? // instance ID for distributed locking
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([status, scheduledAt])
+  @@map("cron_job")
+}
+
+model MediaAsset {
+  id          String   @id @default(cuid())
+  workspaceId String
+  type        String // "image" | "video"
+  url         String
+  key         String? // storage key for deletion
+  provider    String? // "VERCEL_BLOB" | "S3_COMPAT" | "CLOUDFLARE_R2" | "URL_ONLY"
+  filename    String?
+  contentType String?
+  width       Int?
+  height      Int?
+  size        Int?
+  duration    Int? // video duration in seconds
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId, createdAt(sort: Desc)])
+  @@map("media_asset")
+}
+
+model ApiKey {
+  id          String    @id @default(cuid())
+  workspaceId String
+  name        String
+  prefix      String
+  keyHash     String    @unique
+  lastUsedAt  DateTime?
+  expiresAt   DateTime?
+  revokedAt   DateTime?
+  createdAt   DateTime  @default(now())
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([prefix])
+  @@map("api_key")
+}

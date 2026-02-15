@@ -1,0 +1,73 @@
+
+> robo-multipost@0.1.0 build:web:cf /Users/maiconramos/Documents/workspace/robo-multipost
+> pnpm --dir apps/web exec opennextjs-cloudflare build --config ../../wrangler.jsonc --openNextConfigPath ../../open-next.config.ts
+
+
+┌─────────────────────────────┐
+│ OpenNext — Cloudflare build │
+└─────────────────────────────┘
+
+Monorepo detected at /Users/maiconramos/Documents/workspace/robo-multipost
+App directory: /Users/maiconramos/Documents/workspace/robo-multipost/apps/web
+Next.js version : 16.1.6
+@opennextjs/cloudflare version: 1.16.5
+@opennextjs/aws version: 3.9.16
+
+┌─────────────────────────────────┐
+│ OpenNext — Building Next.js app │
+└─────────────────────────────────┘
+
+
+> @robo/web@0.1.0 build /Users/maiconramos/Documents/workspace/robo-multipost/apps/web
+> if [ -n "$DATABASE_URL" ]; then prisma migrate deploy; fi && next build
+
+▲ Next.js 16.1.6 (Turbopack)
+- Environments: .env
+- Experiments (use with caution):
+  · optimizePackageImports
+
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+  Creating an optimized production build ...
+⨯ ERROR: This build is using Turbopack, with a `webpack` config and no `turbopack` config.
+   This may be a mistake.
+
+   As of Next.js 16 Turbopack is enabled by default and
+   custom webpack configurations may need to be migrated to Turbopack.
+
+   NOTE: your `webpack` config may have been added by a configuration plugin.
+
+   To configure Turbopack, see https://nextjs.org/docs/app/api-reference/next-config-js/turbopack
+
+   TIP: Many applications work fine under Turbopack with no configuration,
+   if that is the case for you, you can silence this error by passing the
+   `--turbopack` or `--webpack` flag explicitly or simply setting an 
+   empty turbopack config in your Next config file (e.g. `turbopack: {}`).
+
+> Build error occurred
+Error: Call retries were exceeded
+    at ignore-listed frames {
+  type: 'WorkerError'
+}
+ ELIFECYCLE  Command failed with exit code 1.
+node:internal/errors:984
+  const err = new Error(message);
+              ^
+
+Error: Command failed: pnpm build
+    at genericNodeError (node:internal/errors:984:15)
+    at wrappedFn (node:internal/errors:538:14)
+    at checkExecSyncError (node:child_process:891:11)
+    at Object.execSync (node:child_process:963:15)
+    at buildNextjsApp (file:///Users/maiconramos/Documents/workspace/robo-multipost/node_modules/.pnpm/@opennextjs+aws@3.9.16_next@16.1.6_react-dom@19.2.3_react@19.2.3__react@19.2.3_/node_modules/@opennextjs/aws/dist/build/buildNextApp.js:15:8)
+    at build (file:///Users/maiconramos/Documents/workspace/robo-multipost/node_modules/.pnpm/@opennextjs+cloudflare@1.16.5_next@16.1.6_react-dom@19.2.3_react@19.2.3__react@19.2.3___1c63e346580299af9532630c07f71d2c/node_modules/@opennextjs/cloudflare/dist/cli/build/build.js:50:9)
+    at async buildCommand (file:///Users/maiconramos/Documents/workspace/robo-multipost/node_modules/.pnpm/@opennextjs+cloudflare@1.16.5_next@16.1.6_react-dom@19.2.3_react@19.2.3__react@19.2.3___1c63e346580299af9532630c07f71d2c/node_modules/@opennextjs/cloudflare/dist/cli/commands/build.js:21:5) {
+  status: 1,
+  signal: null,
+  output: [ null, null, null ],
+  pid: 94293,
+  stdout: null,
+  stderr: null
+}
+
+Node.js v20.19.6
+ ELIFECYCLE  Command failed with exit code 1.

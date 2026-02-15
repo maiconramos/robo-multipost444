@@ -1,0 +1,167 @@
+---
+title: TikTok — Configuração Passo a Passo
+---
+
+# TikTok — Configuração Passo a Passo
+
+Este guia explica como conectar sua conta do TikTok ao Robô MultiPost usando o modo **BYO (Bring Your Own OAuth)**.
+
+> **Requisito HTTPS:** O TikTok **não aceita** URLs HTTP para redirecionamento. Você precisa de um domínio com HTTPS para usar esta integração em produção.
+
+---
+
+## Pré-requisitos
+
+- Uma **conta no TikTok** ([tiktok.com](https://www.tiktok.com))
+- Uma **conta de Desenvolvedor no TikTok** — [developers.tiktok.com](https://developers.tiktok.com/)
+- Um **domínio público com HTTPS** (para produção)
+- **Mídia acessível publicamente** via HTTPS (para upload de vídeos)
+
+> **Sobre mídia:** Os vídeos para publicação devem estar acessíveis publicamente via HTTPS. Certifique-se de que o armazenamento de mídia do Robô MultiPost está configurado com um provedor que gera URLs públicas (Vercel Blob, S3, etc.).
+
+---
+
+## 1. Crie um App no TikTok for Developers
+
+1. Acesse [developers.tiktok.com](https://developers.tiktok.com/)
+2. Faça login e vá em **"Manage apps"**
+3. Clique em **"Create app"** (ou "Connect an app")
+
+![TikTok Developer Portal](/docs/tiktok-developer.png)
+
+4. Preencha:
+   - **App Name** — ex: "Meu Robô de Posts"
+   - **Description** — descreva o uso do app
+
+---
+
+## 2. Configure Termos e Plataforma
+
+1. Adicione URLs de **Termos de Serviço** e **Política de Privacidade** do seu domínio HTTPS
+2. Selecione **"Web"** como plataforma
+3. Preencha a URL do seu site
+
+> **Importante:** Os URLs de termos e privacidade devem estar hospedados em um domínio HTTPS público. Não são aceitos localhost ou HTTP.
+
+---
+
+## 3. Adicione os Produtos
+
+1. Na configuração do app, adicione os seguintes produtos:
+   - **Login Kit** — para autenticação OAuth
+   - **Content Posting API** — para publicação de vídeos (habilite **Direct Post**)
+
+2. Configure os seguintes scopes/permissões:
+
+| Scope | Descrição |
+|-------|-----------|
+| `user.info.basic` | Informações básicas do perfil |
+| `video.publish` | Permite publicar vídeos |
+| `video.upload` | Permite fazer upload de vídeos |
+
+---
+
+## 4. Configure a URL de Redirecionamento
+
+Na seção de configuração do app:
+
+1. Adicione a URL de callback:
+
+**Produção:**
+```
+https://seu-dominio.com/callback
+```
+
+> **Atenção:** O TikTok **não aceita** URLs HTTP nem localhost para redirecionamento em produção. Para desenvolvimento, pode ser necessário usar um túnel HTTPS (ex: ngrok).
+
+---
+
+## 5. Obtenha o Client Key e Client Secret
+
+1. Após a criação do app, localize as credenciais:
+   - **Client Key** — identificador do app (16 caracteres)
+   - **Client Secret** — chave secreta (32 caracteres)
+
+---
+
+## 6. Cadastre as Credenciais no Dashboard
+
+1. No Robô MultiPost, vá em **Contas** > **"Conectar Conta"**
+2. Selecione **TikTok** como plataforma
+3. Selecione o método **BYO OAuth**
+4. Preencha:
+   - **APP ID** — cole o Client Key
+   - **APP SECRET** — cole o Client Secret
+5. Clique em **Salvar**
+
+---
+
+## 7. Conecte sua Conta
+
+1. Clique em **"Conectar"** na conta cadastrada
+2. Você será redirecionado para o TikTok para autorizar
+3. Faça login e clique em **"Authorize"**
+4. Após autorizar, a conta aparecerá conectada
+
+---
+
+## Tipos de Publicação Suportados
+
+| Tipo | Descrição | Requisitos |
+|------|-----------|------------|
+| **Vídeo** | Upload de vídeo no TikTok | 1 vídeo obrigatório |
+
+### Configurações do Vídeo
+
+| Configuração | Descrição | Padrão |
+|-------------|-----------|--------|
+| **Privacidade** | `PUBLIC_TO_EVERYONE`, `MUTUAL_FOLLOW_FRIENDS` ou `SELF_ONLY` | `PUBLIC_TO_EVERYONE` |
+| **Comentários** | Permitir comentários | `true` |
+| **Duetos** | Permitir duetos | `true` |
+| **Stitches** | Permitir stitches | `true` |
+| **Conteúdo Comercial** | Tipo de conteúdo comercial | `none` |
+
+---
+
+## Requisitos de Mídia
+
+O TikTok possui requisitos específicos para mídia:
+
+- **URL pública HTTPS** — O vídeo deve estar acessível publicamente
+- O TikTok faz download do vídeo a partir da URL fornecida (`PULL_FROM_URL`)
+- O domínio da mídia pode precisar estar na lista de sites verificados do app
+
+> **Configuração de armazenamento:** Certifique-se de que o Robô MultiPost está usando Vercel Blob, S3 ou outro provedor que gere URLs públicas. O modo URL-only também funciona se os vídeos já estiverem hospedados.
+
+---
+
+## Publicação em Produção
+
+Para publicar em produção:
+
+1. Submeta o app para **revisão** no portal de desenvolvedores do TikTok
+2. A revisão pode levar alguns dias
+3. Enquanto não aprovado, apenas o criador do app pode usar
+
+---
+
+## Solução de Problemas
+
+### Erro "redirect_uri not allowed"
+- Confirme que a URL de callback usa HTTPS
+- Verifique se a URL está cadastrada nas configurações do app
+- O TikTok não aceita HTTP nem localhost
+
+### Upload de vídeo falha
+- Verifique se a URL do vídeo é HTTPS e acessível publicamente
+- Confirme que o domínio da mídia está nos sites verificados do app
+- Teste acessando a URL do vídeo diretamente no navegador
+
+### Erro "Scope not authorized"
+- Verifique se os produtos Login Kit e Content Posting API estão habilitados
+- Confirme que todos os scopes necessários foram adicionados
+- Para apps não revisados, apenas o criador pode usar
+
+### Token expira
+- O sistema renova tokens automaticamente via refresh token
+- Se persistir, desconecte e reconecte a conta

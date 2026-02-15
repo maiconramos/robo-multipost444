@@ -1,0 +1,22 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "main": "apps/web/.open-next/worker.js",
+  "name": "robo-multipost444",
+  "compatibility_date": "2025-05-05",
+  "compatibility_flags": [
+    "nodejs_compat",
+    "global_fetch_strictly_public"
+  ],
+  "workers_dev": true,
+  "minify": true,
+  "assets": {
+    "directory": "apps/web/.open-next/assets",
+    "binding": "ASSETS"
+  },
+  "r2_buckets": [
+    {
+      "binding": "R2_BUCKET",
+      "bucket_name": "robo-multipost-media","preview_bucket_name": "robo-multipost-media"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+export default {
+  overview: "Visão Geral",
+  instagram: "Instagram",
+  facebook: "Facebook",
+  threads: "Threads",
+  twitter: "X (Twitter)",
+  linkedin: "LinkedIn",
+  "linkedin-page": "LinkedIn Page",
+  youtube: "YouTube",
+  tiktok: "TikTok",
+  pinterest: "Pinterest",
+  reddit: "Reddit",
+  discord: "Discord",
+  telegram: "Telegram",
+  "google-business": "Google My Business",
+};

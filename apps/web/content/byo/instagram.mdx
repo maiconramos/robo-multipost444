@@ -1,0 +1,139 @@
+---
+title: Instagram BYO — Configuração Passo a Passo
+---
+
+# Instagram BYO — Configuração Passo a Passo
+
+Este guia explica como conectar sua conta do Instagram ao Robô MultiPost usando o modo **BYO (Bring Your Own OAuth)**, onde você utiliza suas próprias credenciais do Facebook/Meta.
+
+## Pré-requisitos
+
+Antes de começar, verifique se você possui:
+
+- Uma **conta de Instagram Business** ou **Creator** (contas pessoais não são suportadas pela API)
+- Uma **Página do Facebook** vinculada à sua conta do Instagram
+- Uma **conta no Meta for Developers** — [developers.facebook.com](https://developers.facebook.com/)
+
+> **Dica:** Se sua conta do Instagram ainda é pessoal, converta para Business ou Creator em **Configurações > Conta > Mudar tipo de conta**.
+
+---
+
+## 1. Crie um App no Meta for Developers
+
+1. Acesse [developers.facebook.com](https://developers.facebook.com/)
+2. Clique em **"Meus Apps"** no canto superior direito (faça login se necessário)
+3. Clique no botão **"Criar App"**
+4. Selecione **"Outro"** e clique em **Avançar**
+5. Selecione o tipo de app **"Empresa"** (Business) e clique em **Avançar**
+6. Preencha:
+   - **Nome do App** — ex: "Meu Robô de Posts"
+   - **E-mail de contato** — seu e-mail
+   - **Conta Empresarial** — selecione se tiver uma
+7. Clique em **"Criar App"**
+
+---
+
+## 2. Adicione o Produto "Instagram Graph API"
+
+1. No painel do app, procure por **"Instagram Graph API"**
+2. Clique em **"Configurar"**
+3. (Opcional) Adicione também o **"Login do Facebook for Business"**
+
+---
+
+## 3. Obtenha o App ID e App Secret
+
+1. No menu lateral esquerdo, vá em **Configurações > Básico**
+2. Copie o **ID do Aplicativo (App ID)**
+3. Clique em **"Mostrar"** ao lado da **Chave Secreta do Aplicativo (App Secret)** e copie
+
+> **Importante:** Guarde o App Secret em local seguro. Ele será criptografado ao ser armazenado no sistema.
+
+---
+
+## 4. Configure a URL de Redirecionamento OAuth
+
+Ainda em **Configurações > Básico**:
+
+1. Na seção **"Domínios do App"**, adicione o domínio do seu Robô MultiPost (ex: `meurobo.com`)
+2. No campo **"URL de Redirecionamento de Login"**, adicione:
+
+```
+https://seu-dominio.com/callback/instagram
+```
+
+Para desenvolvimento local:
+
+```
+http://localhost:3000/callback/instagram
+```
+
+---
+
+## 5. Cadastre as Credenciais no Dashboard
+
+1. No Robô MultiPost, vá em **Contas** e clique em **"Conectar Conta"**
+2. Selecione **Instagram** com o método **BYO OAuth**
+3. Preencha:
+   - **APP ID** — cole o ID do Aplicativo
+   - **APP SECRET** — cole a Chave Secreta
+4. Clique em **Salvar**
+
+---
+
+## 6. Conecte sua Conta Instagram
+
+Após salvar as credenciais:
+
+1. Clique em **"Conectar"** na conta cadastrada
+2. Você será redirecionado para o Facebook para autorizar o acesso
+3. Selecione a **Página do Facebook** vinculada ao seu Instagram
+4. Conceda as permissões solicitadas
+5. Após autorizar, você será redirecionado de volta ao sistema
+
+---
+
+## Permissões Necessárias
+
+O app solicita as seguintes permissões (scopes) durante a autorização OAuth:
+
+| Permissão | Descrição |
+|-----------|-----------|
+| `instagram_basic` | Acesso básico ao perfil do Instagram |
+| `instagram_content_publish` | Permite publicar conteúdo no Instagram |
+| `pages_show_list` | Lista as Páginas do Facebook que você administra |
+| `pages_read_engagement` | Lê engajamento das páginas |
+| `business_management` | Gerenciamento da conta Business |
+
+---
+
+## Publicação em Produção
+
+Para usar em produção (além de contas de teste), você precisa:
+
+1. No painel do app, ir em **Revisão do App**
+2. Solicitar revisão para as permissões listadas acima
+3. Aguardar aprovação da Meta (pode levar alguns dias)
+
+> **Para testes:** Adicione sua conta como **Desenvolvedor** ou **Testador** no painel do app em **Funções > Funções**. Isso permite usar todas as permissões sem revisão.
+
+---
+
+## Solução de Problemas
+
+### Erro "Invalid redirect_uri"
+- Verifique se a URL de callback está configurada corretamente nas configurações do app
+- A URL deve corresponder exatamente: `https://seu-dominio.com/callback/instagram`
+
+### Erro "Missing App ID or App Secret"
+- Verifique se as credenciais foram salvas corretamente na seção de contas
+- Confirme que o App ID e App Secret estão corretos
+
+### Conta não aparece após autorização
+- Confirme que sua conta Instagram é **Business** ou **Creator**
+- Verifique se há uma **Página do Facebook** vinculada à conta Instagram
+- Tente desconectar e reconectar a conta
+
+### Erro ao publicar
+- Verifique se a permissão `instagram_content_publish` foi concedida
+- Para contas em modo de teste, confirme que o usuário é testador do app

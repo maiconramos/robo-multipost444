@@ -1,0 +1,107 @@
+---
+title: Reddit — Configuração Passo a Passo
+---
+
+# Reddit — Configuração Passo a Passo
+
+Este guia explica como conectar sua conta do Reddit ao Robô MultiPost usando o modo **BYO (Bring Your Own OAuth)**.
+
+> **Em Desenvolvimento:** O provedor BYO para Reddit está em desenvolvimento. Este guia documenta a configuração do app no portal de desenvolvedores para quando o suporte estiver disponível.
+
+---
+
+## Pré-requisitos
+
+- Uma **conta no Reddit** ([reddit.com](https://www.reddit.com))
+- Acesso às **preferências de apps** — [reddit.com/prefs/apps](https://www.reddit.com/prefs/apps)
+
+---
+
+## 1. Crie um App no Reddit
+
+1. Acesse [reddit.com/prefs/apps](https://www.reddit.com/prefs/apps)
+2. Role até o final da página e clique em **"create another app..."** (ou "are you a developer? create an app...")
+
+![Reddit Developer Portal](/docs/reddit-developer.png)
+
+3. Preencha:
+   - **Name** — ex: "Meu Robô de Posts"
+   - **App type** — selecione **"web app"**
+   - **Description** — descreva o uso (opcional)
+   - **About URL** — URL do seu site (opcional)
+   - **Redirect URI:**
+
+**Produção:**
+```
+https://seu-dominio.com/callback
+```
+
+**Desenvolvimento local:**
+```
+http://localhost:3000/callback
+```
+
+4. Clique em **"create app"**
+
+---
+
+## 2. Obtenha as Credenciais
+
+Após criar o app:
+
+1. O **Client ID** é o código exibido abaixo do nome do app (string de ~14 caracteres)
+2. O **Client Secret** é exibido no campo "secret"
+
+> **Atenção:** Guarde o Client Secret em local seguro. Ele será criptografado ao ser armazenado no sistema.
+
+---
+
+## 3. Cadastre as Credenciais no Dashboard
+
+1. No Robô MultiPost, vá em **Contas** > **"Conectar Conta"**
+2. Selecione **Reddit** como plataforma
+3. Selecione o método **BYO OAuth**
+4. Preencha:
+   - **APP ID** — cole o Client ID
+   - **APP SECRET** — cole o Client Secret
+5. Clique em **Salvar**
+
+---
+
+## Permissões Necessárias (Scopes)
+
+| Scope | Descrição |
+|-------|-----------|
+| `identity` | Acesso à identidade do usuário |
+| `submit` | Permite criar posts e comentários |
+| `read` | Acesso de leitura a conteúdos |
+
+---
+
+## Tipos de Publicação (Planejado)
+
+| Tipo | Descrição | Requisitos |
+|------|-----------|------------|
+| **Texto** | Post de texto em subreddit | Subreddit + título |
+| **Link** | Post com link | Subreddit + título + URL |
+| **Imagem** | Post com imagem | Subreddit + título + imagem |
+
+---
+
+## Considerações Importantes
+
+### Regras do Reddit
+- O Reddit tem **regras estritas contra spam** e automação excessiva
+- Respeite os intervalos entre posts (geralmente 10 minutos entre publicações)
+- Cada subreddit tem suas próprias regras de publicação
+- Contas novas podem ter restrições de karma
+
+### Limites da API
+- **60 requisições por minuto** (com OAuth)
+- Posts excessivos podem resultar em banimento do subreddit ou conta
+
+---
+
+## Status
+
+> **Este provedor está em desenvolvimento.** A configuração do app no Reddit pode ser feita antecipadamente seguindo os passos acima. A integração completa com o Robô MultiPost será disponibilizada em uma atualização futura.

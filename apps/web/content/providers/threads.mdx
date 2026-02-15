@@ -1,0 +1,172 @@
+---
+title: Threads — Configuração Passo a Passo
+---
+
+# Threads — Configuração Passo a Passo
+
+Este guia explica como conectar sua conta do Threads ao Robô MultiPost usando o modo **BYO (Bring Your Own OAuth)**.
+
+> **Aviso:** A configuração do Threads é mais complexa que outros provedores Meta, pois requer passos adicionais como adicionar testadores e aceitar convites.
+
+---
+
+## Pré-requisitos
+
+- Uma **conta no Threads** ([threads.net](https://www.threads.net))
+- Uma **conta no Meta for Developers** — [developers.facebook.com](https://developers.facebook.com/)
+- A conta do Threads deve ser diferente da conta de desenvolvedor Meta (para testes)
+
+> **Nota:** O Threads usa a API do Meta, mas possui um app separado (não compartilha o app com Instagram/Facebook).
+
+---
+
+## 1. Crie um App no Meta for Developers
+
+1. Acesse [developers.facebook.com](https://developers.facebook.com/)
+2. Clique em **"Meus Apps"** > **"Criar App"**
+3. Preencha:
+   - **Nome do App** — ex: "Meu Robô Threads"
+   - **E-mail de contato** — seu e-mail
+4. Clique em **"Criar App"**
+
+---
+
+## 2. Solicite Acesso à API do Threads
+
+1. No painel do app, procure por **"Acessar a API do Threads"**
+2. Clique em **"Configurar"**
+3. Se solicitado detalhes empresariais, preencha conforme necessário
+
+> **Caso fique travado:** Habilite a autenticação de dois fatores (2FA) em **Configurações do Meta Business Suite > Segurança**.
+
+---
+
+## 3. Configure as Permissões
+
+1. Na seção da API do Threads, adicione as seguintes permissões:
+   - `threads_basic`
+   - `threads_content_publish`
+
+![Configurar Permissões do Threads](/docs/meta-permissions.png)
+
+---
+
+## 4. Obtenha o App ID e App Secret
+
+1. Vá em **Configurações** (Settings) do app
+2. Copie o **App ID**
+3. Copie o **App Secret** (role até o final para ver o valor completo)
+
+> **Atenção:** O campo do App Secret pode ser cortado visualmente. Certifique-se de copiar o valor completo (32 caracteres).
+
+---
+
+## 5. Configure a URL de Redirecionamento
+
+Na seção de configuração da API do Threads:
+
+1. Adicione a URL de callback:
+
+**Produção:**
+```
+https://seu-dominio.com/callback
+```
+
+**Desenvolvimento local:**
+```
+http://localhost:3000/callback
+```
+
+2. **Clique na URL** após adicioná-la para ativá-la (requisito do Meta)
+3. Para os campos **"URL de Desinstalação"** e **"URL de Exclusão"**, adicione a mesma URL como placeholder
+
+> **Importante:** A URL de callback deve ser "clicada" para ser ativada. Apenas salvar o formulário não é suficiente.
+
+---
+
+## 6. Cadastre as Credenciais no Dashboard
+
+1. No Robô MultiPost, vá em **Contas** > **"Conectar Conta"**
+2. Selecione **Threads** como plataforma
+3. Selecione o método **BYO OAuth**
+4. Preencha:
+   - **APP ID** — cole o App ID do Threads
+   - **APP SECRET** — cole o App Secret
+5. Clique em **Salvar**
+
+---
+
+## 7. Adicione Testadores (Obrigatório para Testes)
+
+1. No painel do app no Meta, vá em **Funções do App** (App Roles)
+2. Adicione um papel de **"Testador do Threads"** (Threads Tester)
+3. Insira o nome de usuário do Threads que deseja conectar
+
+---
+
+## 8. Aceite o Convite de Testador
+
+1. Faça login em [threads.net](https://www.threads.net) com a conta convidada
+2. Vá em **Configurações > Permissões de sites**
+3. Aceite o convite pendente do seu app
+
+> **Nota:** O convite pode levar alguns minutos para aparecer. Verifique também a seção "Convites" no perfil do Threads.
+
+---
+
+## 9. Conecte sua Conta
+
+1. No dashboard, clique em **"Conectar"** na conta cadastrada
+2. Autorize o acesso no Threads
+3. A conta aparecerá conectada na lista
+
+---
+
+## Permissões Necessárias
+
+| Permissão | Descrição |
+|-----------|-----------|
+| `threads_basic` | Acesso básico ao perfil e threads |
+| `threads_content_publish` | Permite publicar threads |
+
+---
+
+## Tipos de Publicação Suportados
+
+| Tipo | Descrição | Requisitos |
+|------|-----------|------------|
+| **Texto** | Thread apenas com texto | — |
+| **Imagem** | Thread com imagem | 1 imagem |
+| **Carrossel** | Múltiplos itens | Até 10 itens |
+
+---
+
+## Publicação em Produção
+
+Para publicar em produção:
+
+1. Complete a **Revisão do App** no Meta for Developers
+2. Solicite revisão para `threads_basic` e `threads_content_publish`
+3. Aguarde aprovação da Meta
+
+---
+
+## Solução de Problemas
+
+### Erro ao conectar — "Invalid scope"
+- Verifique se `threads_basic` e `threads_content_publish` foram adicionados nas permissões do app
+- Confirme que o testador aceitou o convite
+
+### Convite de testador não aparece
+- Aguarde alguns minutos após enviar o convite
+- Verifique se o nome de usuário do Threads está correto
+- Acesse threads.net/settings e procure por "Permissões de sites"
+
+### Erro "App Secret truncado"
+- Ao copiar o App Secret, role o campo até o final
+- O valor completo deve ter 32 caracteres
+
+### Publicação falha silenciosamente
+- O Threads usa um processo assíncrono: criação do container → publicação
+- Verifique se a conta conectada tem permissão para publicar
+- Confirme que o app está com as permissões corretas ativas

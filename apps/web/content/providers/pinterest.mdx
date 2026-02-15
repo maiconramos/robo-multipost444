@@ -1,0 +1,152 @@
+---
+title: Pinterest — Configuração Passo a Passo
+---
+
+# Pinterest — Configuração Passo a Passo
+
+Este guia explica como conectar sua conta do Pinterest ao Robô MultiPost usando o modo **BYO (Bring Your Own OAuth)**.
+
+---
+
+## Pré-requisitos
+
+- Uma **conta Pinterest Business** ([pinterest.com](https://www.pinterest.com)) — contas pessoais não são suportadas pela API
+- Acesso ao **Pinterest Developer Dashboard** — [developers.pinterest.com](https://developers.pinterest.com/)
+
+> **Dica:** Se sua conta é pessoal, converta para Business em **Configurações > Tipo de conta > Converter para conta Business**.
+
+---
+
+## 1. Crie um App no Pinterest Developer Dashboard
+
+1. Acesse [developers.pinterest.com](https://developers.pinterest.com/)
+2. Faça login e clique em **"My apps"** > **"Create app"**
+
+![Pinterest Developer Dashboard](/docs/pinterest-developer.png)
+
+3. Preencha todos os campos obrigatórios:
+   - **App Name** — ex: "Meu Robô de Posts"
+   - **Description** — descreva o uso
+   - **Website URL** — URL do seu domínio
+4. Submeta para aprovação
+
+> **Aprovação:** O Pinterest pode levar alguns dias para aprovar o app. Aguarde a aprovação antes de prosseguir.
+
+---
+
+## 2. Obtenha as Credenciais
+
+Após a aprovação do app:
+
+1. No dashboard do app, copie:
+   - **App ID**
+   - **App Secret Key**
+
+---
+
+## 3. Configure a URL de Redirecionamento
+
+Na configuração do app:
+
+1. Adicione a URL de callback:
+
+**Produção:**
+```
+https://seu-dominio.com/callback
+```
+
+**Desenvolvimento local:**
+```
+http://localhost:3000/callback
+```
+
+---
+
+## 4. Cadastre as Credenciais no Dashboard
+
+1. No Robô MultiPost, vá em **Contas** > **"Conectar Conta"**
+2. Selecione **Pinterest** como plataforma
+3. Selecione o método **BYO OAuth**
+4. Preencha:
+   - **APP ID** — cole o App ID
+   - **APP SECRET** — cole o App Secret Key
+5. Clique em **Salvar**
+
+---
+
+## 5. Conecte sua Conta
+
+1. Clique em **"Conectar"** na conta cadastrada
+2. Você será redirecionado para o Pinterest para autorizar
+3. Clique em **"Allow"** para conceder as permissões
+4. O sistema detectará automaticamente seus **boards** (pastas)
+5. Um board padrão será selecionado para publicações futuras
+
+---
+
+## Permissões Necessárias
+
+| Scope | Descrição |
+|-------|-----------|
+| `boards:read` | Listar os boards (pastas) da conta |
+| `pins:write` | Criar e publicar pins |
+
+---
+
+## Tipos de Publicação Suportados
+
+| Tipo | Descrição | Requisitos |
+|------|-----------|------------|
+| **Pin com Imagem** | Pin com imagem e descrição | 1 imagem obrigatória |
+
+### Configurações do Pin
+
+| Configuração | Descrição | Padrão |
+|-------------|-----------|--------|
+| **Título** | Título do Pin (máx. 100 caracteres) | Opcional |
+| **Board** | Pasta onde o Pin será salvo | Board padrão detectado no OAuth |
+| **Link** | URL de destino do Pin | Opcional |
+
+---
+
+## Seleção de Board
+
+Durante a conexão OAuth, o sistema detecta automaticamente todos os seus boards. O primeiro board é definido como padrão.
+
+Ao criar um post para Pinterest, você pode:
+- Usar o board padrão (detectado automaticamente)
+- Selecionar outro board nas configurações específicas do post
+
+---
+
+## Publicação em Produção
+
+1. O app deve estar **aprovado** pelo Pinterest
+2. Após aprovação, qualquer usuário Pinterest Business pode conectar-se ao app
+
+---
+
+## Solução de Problemas
+
+### App pendente de aprovação
+- O Pinterest pode levar alguns dias para aprovar
+- Verifique o status no developer dashboard
+- Certifique-se de que todos os campos obrigatórios foram preenchidos
+
+### Nenhum board encontrado
+- Confirme que sua conta possui pelo menos 1 board (pasta) criado
+- Verifique se a conta é Business (não pessoal)
+
+### Erro "Invalid redirect_uri"
+- Verifique se a URL de callback está configurada no app
+- A URL deve corresponder exatamente
+
+### Pin não aparece no board
+- O Pinterest pode levar alguns minutos para processar
+- Verifique se a imagem está acessível via URL pública
+- Confirme que o board selecionado existe e está ativo
+
+### Erro ao fazer upload de imagem
+- O Pinterest aceita imagens via URL (image_url)
+- Confirme que o armazenamento de mídia gera URLs públicas
+- Formatos suportados: JPEG, PNG

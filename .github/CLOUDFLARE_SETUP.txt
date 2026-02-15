@@ -1,0 +1,69 @@
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ⚠️  CLOUDFLARE PAGES SETUP - LEIA ANTES DE FAZER DEPLOY  ⚠️
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Este é um MONOREPO (múltiplas aplicações em um repositório).
+
+Estrutura:
+  robo-multipost/
+  ├── apps/
+  │   ├── web/        ← Next.js (frontend) - NÃO fazer deploy aqui
+  │   └── worker/     ← Cloudflare Worker (backend API) - FAZER DEPLOY AQUI
+  └── packages/       ← Código compartilhado
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  CONFIGURAÇÃO OBRIGATÓRIA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Ao criar projeto no Cloudflare Pages, configure:
+
+  ┌─────────────────────────────────────────────────────────────┐
+  │  Framework preset:       None                               │
+  │  Build command:          (deixar vazio)                     │
+  │  Build output directory: (deixar vazio)                     │
+  │                                                             │
+  │  Root directory:         apps/worker  ← ⚠️  OBRIGATÓRIO!   │
+  └─────────────────────────────────────────────────────────────┘
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  POR QUE PRECISA?
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+SEM Root directory:
+  ❌ Cloudflare faz build do Next.js (raiz do projeto)
+  ❌ Erro: "The entry-point file at .open-next/worker.js was not found"
+  ❌ Deploy falha
+
+COM Root directory: apps/worker
+  ✅ Cloudflare entra em apps/worker/
+  ✅ Lê wrangler.toml automaticamente
+  ✅ Faz build do Worker corretamente
+  ✅ Deploy funciona!
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  GUIA COMPLETO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Ver passo-a-passo detalhado com:
+  - Criação de banco de dados
+  - Configuração de variáveis de ambiente
+  - Troubleshooting de erros comuns
+
+📖 CLOUDFLARE.md
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  CHECKLIST RÁPIDO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  [ ] Criar banco PostgreSQL em neon.tech
+  [ ] Conectar repositório GitHub ao Cloudflare
+  [ ] ⚠️  Configurar Root directory: apps/worker
+  [ ] Adicionar variáveis de ambiente (DATABASE_URL, ENCRYPTION_KEY, etc.)
+  [ ] Deploy!
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

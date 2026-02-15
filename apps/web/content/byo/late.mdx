@@ -1,0 +1,92 @@
+---
+title: Late Provider — Configuração Passo a Passo
+---
+
+# Late Provider — Configuração Passo a Passo
+
+Este guia explica como configurar o **Late Provider** no Robô MultiPost para publicar em múltiplas redes sociais de forma simplificada.
+
+## O que é o Late?
+
+O [Late](https://getlate.dev) é um serviço que abstrai a complexidade das APIs de cada rede social. Em vez de criar apps OAuth separados para cada plataforma, você utiliza uma única API Key do Late para conectar e publicar em diversas redes.
+
+### Late vs BYO — Qual Escolher?
+
+| Característica | Late Provider | BYO (Bring Your Own) |
+|---------------|--------------|---------------------|
+| **Complexidade** | Simples — uma API Key | Complexa — app OAuth por plataforma |
+| **Controle** | Delegado ao Late | Total controle |
+| **Dependência** | Depende do serviço Late | Sem intermediários |
+| **Plataformas** | Múltiplas com uma key | Configuração individual |
+| **Custo** | Conforme plano do Late | Gratuito (exceto custos da plataforma) |
+
+---
+
+## Pré-requisitos
+
+- Uma conta no [Late](https://getlate.dev)
+- Uma API Key do Late (disponível no painel do Late)
+
+---
+
+## 1. Obtenha sua API Key do Late
+
+1. Acesse [getlate.dev](https://getlate.dev) e faça login
+2. No painel, vá em **Settings** ou **API Keys**
+3. Crie uma nova API Key ou copie a existente
+
+> **Importante:** Guarde sua API Key em local seguro. Ela será criptografada ao ser armazenada no sistema.
+
+---
+
+## 2. Configure a API Key no Robô MultiPost
+
+1. No Robô MultiPost, vá em **Configurações** (Settings)
+2. Na seção **Late Provider**, cole sua **API Key**
+3. Clique em **Salvar**
+4. O sistema vai validar automaticamente a conexão
+
+---
+
+## 3. Conecte suas Contas de Redes Sociais
+
+Com a API Key configurada:
+
+1. Vá em **Contas** no dashboard
+2. Clique em **"Conectar Conta"**
+3. Selecione a plataforma desejada (Instagram, Facebook, etc.)
+4. Escolha o método **Late**
+5. Siga o fluxo de autorização da plataforma
+6. Após autorizar, a conta aparecerá na lista
+
+---
+
+## 4. Publique seu Primeiro Post
+
+1. Vá em **Compose** no dashboard
+2. Selecione as contas conectadas via Late
+3. Escreva seu post e adicione mídia (se desejar)
+4. Escolha **Publicar agora** ou **Agendar**
+5. Pronto!
+
+---
+
+## Plataformas Suportadas via Late
+
+O Late suporta diversas plataformas. Consulte a documentação do Late para a lista completa e atualizada de plataformas disponíveis em [getlate.dev](https://getlate.dev).
+
+---
+
+## Solução de Problemas
+
+### Erro "Invalid API Key"
+- Verifique se a API Key foi copiada corretamente (sem espaços extras)
+- Confirme que a key está ativa no painel do Late
+
+### Conta não conecta
+- Verifique se sua API Key tem permissões para a plataforma desejada
+- Tente gerar uma nova API Key no painel do Late
+
+### Erro ao publicar
+- Verifique se a conta está conectada e ativa na lista de contas
+- Confirme que o tipo de conteúdo (imagem, vídeo, texto) é suportado pela plataforma

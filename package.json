@@ -1,0 +1,53 @@
+{
+  "name": "robo-multipost444",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "pnpm run build:web:cf",
+    "build:web:cf": "pnpm --dir apps/web exec opennextjs-cloudflare build --config ../../wrangler.jsonc --openNextConfigPath ../../open-next.config.ts",
+    "build:turbo": "turbo build",
+    "lint": "turbo lint",
+    "typecheck": "turbo typecheck",
+    "dev:web": "pnpm --filter @robo/web dev",
+    "build:web": "pnpm --filter @robo/web build",
+    "deploy": "wrangler deploy",
+    "deploy:preview": "wrangler versions upload",
+    "test:e2e": "pnpm --filter @robo/web test:e2e",
+    "test:e2e:ui": "pnpm --filter @robo/web test:e2e:ui",
+    "test:e2e:headed": "pnpm --filter @robo/web test:e2e:headed",
+    "test:e2e:report": "pnpm --filter @robo/web test:e2e:report"
+  },
+  "devDependencies": {
+    "@opennextjs/cloudflare": "^1.16.5",
+    "esbuild": "^0.27.3",
+    "turbo": "^2.5.0",
+    "wrangler": "^4.65.0"
+  },
+  "packageManager": "pnpm@10.29.3",
+  "cloudflare": {
+    "bindings": {
+      "DATABASE_URL": {
+        "description": "PostgreSQL Connection String (e.g. from Neon)"
+      },
+      "ENCRYPTION_KEY": {
+        "description": "32-byte hex string for encryption (openssl rand -hex 32)"
+      },
+      "BETTER_AUTH_SECRET": {
+        "description": "Random string for auth secret (openssl rand -hex 32)"
+      },
+      "NEXT_PUBLIC_APP_URL": {
+        "description": "Your application URL (https://...)"
+      },
+      "CRON_SECRET": {
+        "description": "Secret token for securing cron jobs"
+      },
+      "R2_ACCESS_KEY_ID": {
+        "description": "R2 Access Key ID (create manually in Cloudflare Dashboard)"
+      },
+      "R2_SECRET_ACCESS_KEY": {
+        "description": "R2 Secret Access Key (create manually in Cloudflare Dashboard)"
+      }
+    }
+  }
+}

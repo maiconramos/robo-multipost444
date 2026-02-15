@@ -1,0 +1,57 @@
+App Code Size: 6.17 MB
+Node Modules Size: 4.40 MB
+
+
+Top 50 largest packages in bundle:
+2.07 MB - next
+0.30 MB - @aws-sdk/client-s3
+0.27 MB - react-dom
+0.19 MB - @prisma/client
+0.17 MB - @aws-sdk/core
+0.14 MB - @smithy/core
+0.10 MB - @aws-sdk/nested-clients
+0.09 MB - .prisma
+0.03 MB - @aws-sdk/client-sso
+0.03 MB - fast-xml-parser
+0.03 MB - @smithy/node-http-handler
+0.03 MB - @smithy/util-stream
+0.02 MB - @aws-sdk/middleware-sdk-s3
+0.02 MB - tslib
+0.02 MB - @smithy/signature-v4
+0.02 MB - @smithy/smithy-client
+0.02 MB - @aws-sdk/middleware-flexible-checksums
+0.02 MB - styled-jsx
+0.02 MB - react
+0.02 MB - @aws-sdk/middleware-bucket-endpoint
+0.02 MB - @smithy/util-endpoints
+0.01 MB - @smithy/credential-provider-imds
+0.01 MB - @smithy/middleware-retry
+0.01 MB - @smithy/eventstream-codec
+0.01 MB - @aws-sdk/credential-provider-login
+0.01 MB - @smithy/middleware-endpoint
+0.01 MB - @aws-sdk/credential-provider-ini
+0.01 MB - @smithy/middleware-stack
+0.01 MB - @smithy/util-retry
+0.01 MB - @aws-sdk/util-endpoints
+0.01 MB - @smithy/shared-ini-file-loader
+0.01 MB - @aws-sdk/credential-provider-sso
+0.01 MB - @smithy/config-resolver
+0.01 MB - @aws-sdk/credential-provider-http
+0.01 MB - @smithy/fetch-http-handler
+0.01 MB - @aws-sdk/middleware-user-agent
+0.01 MB - @aws-sdk/token-providers
+0.01 MB - @aws-sdk/credential-provider-node
+0.01 MB - @smithy/util-waiter
+0.01 MB - @aws-sdk/signature-v4-multi-region
+0.01 MB - @aws-crypto/crc32c
+0.01 MB - @aws-crypto/crc32
+0.01 MB - @smithy/eventstream-serde-universal
+0.00 MB - @aws-sdk/credential-provider-web-identity
+0.00 MB - @smithy/protocol-http
+0.00 MB - @aws-sdk/xml-builder
+0.00 MB - @aws/lambda-invoke-store
+0.00 MB - @smithy/middleware-serde
+0.00 MB - @aws-crypto/util
+0.00 MB - @smithy/util-utf8
+
+Total inputs size: 10.57 MB

@@ -1,0 +1,128 @@
+
+> robo-multipost@0.1.0 build:web:cf /Users/maiconramos/Documents/workspace/robo-multipost
+> pnpm --dir apps/web exec opennextjs-cloudflare build --config ../../wrangler.jsonc --openNextConfigPath ../../open-next.config.ts
+
+
+┌─────────────────────────────┐
+│ OpenNext — Cloudflare build │
+└─────────────────────────────┘
+
+Monorepo detected at /Users/maiconramos/Documents/workspace/robo-multipost
+App directory: /Users/maiconramos/Documents/workspace/robo-multipost/apps/web
+Next.js version : 16.1.6
+@opennextjs/cloudflare version: 1.16.5
+@opennextjs/aws version: 3.9.16
+
+┌─────────────────────────────────┐
+│ OpenNext — Building Next.js app │
+└─────────────────────────────────┘
+
+
+> @robo/web@0.1.0 build /Users/maiconramos/Documents/workspace/robo-multipost/apps/web
+> if [ -n "$DATABASE_URL" ]; then prisma migrate deploy; fi && next build --webpack
+
+▲ Next.js 16.1.6 (webpack)
+- Environments: .env
+- Experiments (use with caution):
+  · optimizePackageImports
+
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+  Creating an optimized production build ...
+✓ Compiled successfully in 18.8s
+  Running TypeScript ...
+  Collecting page data using 11 workers ...
+  Generating static pages using 11 workers (0/50) ...
+  Generating static pages using 11 workers (12/50) 
+  Generating static pages using 11 workers (24/50) 
+  Generating static pages using 11 workers (37/50) 
+✓ Generating static pages using 11 workers (50/50) in 452.2ms
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /api/accounts
+├ ƒ /api/accounts/[accountId]
+├ ƒ /api/accounts/[accountId]/credentials/reveal
+├ ƒ /api/accounts/callback
+├ ƒ /api/accounts/callback/finalize
+├ ƒ /api/accounts/connect
+├ ƒ /api/accounts/connect/[platform]
+├ ƒ /api/accounts/health
+├ ƒ /api/ai/generate-image
+├ ƒ /api/ai/generate-text
+├ ƒ /api/ai/status
+├ ƒ /api/auth/[...all]
+├ ƒ /api/credentials
+├ ƒ /api/cron/process
+├ ƒ /api/integrations/instagram/validate
+├ ƒ /api/logs/publishing
+├ ƒ /api/media
+├ ƒ /api/media/[assetId]
+├ ƒ /api/media/clear
+├ ƒ /api/media/storage
+├ ƒ /api/media/upload
+├ ƒ /api/media/upload-token
+├ ƒ /api/posts
+├ ƒ /api/posts/[postId]
+├ ƒ /api/posts/[postId]/retry
+├ ƒ /api/profiles
+├ ƒ /api/profiles/[profileId]
+├ ƒ /api/public/v1/accounts
+├ ƒ /api/public/v1/media
+├ ƒ /api/public/v1/media/token
+├ ƒ /api/public/v1/posts
+├ ƒ /api/public/v1/posts/[postId]
+├ ƒ /api/public/v1/profiles
+├ ƒ /api/queues
+├ ƒ /api/queues/[queueId]
+├ ƒ /api/queues/next-slot
+├ ƒ /api/queues/preview
+├ ƒ /api/system/cron-info
+├ ƒ /api/validate-key
+├ ƒ /api/workspaces
+├ ƒ /api/workspaces/[workspaceId]
+├ ƒ /api/workspaces/active
+├ ƒ /api/workspaces/api-keys
+├ ƒ /api/workspaces/api-keys/[keyId]
+├ ƒ /api/workspaces/invite
+├ ƒ /callback
+├ ○ /dashboard
+├ ○ /dashboard/accounts
+├ ○ /dashboard/api-docs
+├ ○ /dashboard/calendar
+├ ○ /dashboard/compose
+├ ○ /dashboard/design-system
+├ ○ /dashboard/logs
+├ ○ /dashboard/media
+├ ○ /dashboard/queue
+├ ○ /dashboard/settings
+├ ƒ /docs/[[...mdxPath]]
+├ ƒ /invite/[token]
+├ ○ /login
+├ ○ /no-access
+└ ○ /signup
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+
+┌──────────────────────────────┐
+│ OpenNext — Generating bundle │
+└──────────────────────────────┘
+
+Bundling middleware function...
+Bundling static assets...
+Bundling cache assets...
+Building server function: default...
+Applying code patches: 2.894s
+# copyPackageTemplateFiles
+[35m⚙️ Bundling the OpenNext server...
+[0m
+[35mWorker saved in `.open-next/worker.js` 🚀
+[0m
+OpenNext build complete.

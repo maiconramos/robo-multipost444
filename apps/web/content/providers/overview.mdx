@@ -1,0 +1,98 @@
+---
+title: Provedores — Visão Geral
+---
+
+# Provedores de Redes Sociais
+
+O Robô MultiPost suporta publicação em diversas plataformas de redes sociais. Cada provedor pode ser conectado usando o modo **BYO (Bring Your Own)**, onde você utiliza suas próprias credenciais OAuth, ou via **Late Provider**, que simplifica o processo com uma única API Key.
+
+---
+
+## Provedores Disponíveis
+
+| Plataforma | Modo BYO | Late | Status |
+|------------|----------|------|--------|
+| [Instagram](/docs/providers/instagram) | OAuth (Meta) | Sim | Disponível |
+| [Facebook](/docs/providers/facebook) | OAuth (Meta) | Sim | Disponível |
+| [Threads](/docs/providers/threads) | OAuth (Meta) | Sim | Disponível |
+| [X (Twitter)](/docs/providers/twitter) | OAuth 2.0 + PKCE | — | Disponível |
+| [LinkedIn](/docs/providers/linkedin) | OAuth 2.0 | — | Disponível |
+| [LinkedIn Page](/docs/providers/linkedin-page) | OAuth 2.0 | — | Disponível |
+| [YouTube](/docs/providers/youtube) | OAuth (Google) | — | Disponível |
+| [TikTok](/docs/providers/tiktok) | OAuth 2.0 | Sim | Disponível |
+| [Pinterest](/docs/providers/pinterest) | OAuth 2.0 | — | Disponível |
+| [Reddit](/docs/providers/reddit) | OAuth 2.0 | — | Em breve |
+| [Discord](/docs/providers/discord) | Bot Token | — | Em breve |
+| [Telegram](/docs/providers/telegram) | Bot Token | — | Em breve |
+| [Google My Business](/docs/providers/google-business) | OAuth (Google) | — | Em breve |
+
+---
+
+## Como Funciona
+
+### Modo BYO (Bring Your Own)
+
+No modo BYO, você cria um aplicativo OAuth no portal de desenvolvedores de cada plataforma e cadastra as credenciais (App ID e App Secret) diretamente no dashboard do Robô MultiPost.
+
+**Vantagens:**
+- Controle total sobre as credenciais
+- Sem dependência de serviços terceiros
+- Gratuito (apenas custos da plataforma)
+
+**Desvantagens:**
+- Configuração individual por plataforma
+- Necessário criar apps em cada portal de desenvolvedores
+- Revisão/aprovação pode ser necessária para produção
+
+### Modo Late Provider
+
+O [Late Provider](/docs/byo/late) abstrai a complexidade das APIs usando uma única API Key. Ideal para quem quer começar rapidamente.
+
+**Vantagens:**
+- Uma única API Key para múltiplas plataformas
+- Configuração simplificada
+- Sem necessidade de criar apps OAuth
+
+**Desvantagens:**
+- Depende do serviço Late
+- Custo conforme plano do Late
+
+---
+
+## Fluxo de Conexão
+
+O fluxo geral para conectar uma conta no modo BYO é:
+
+1. **Crie um App** no portal de desenvolvedores da plataforma
+2. **Configure o Callback URL** — use a URL exibida no dashboard ao conectar a conta
+3. **Cadastre as credenciais** (App ID + App Secret) no dashboard em **Contas**
+4. **Conecte a conta** — clique em "Conectar" e autorize o acesso via OAuth
+5. **Pronto!** — A conta aparecerá na lista e estará pronta para publicação
+
+> **Callback URL:** Ao conectar uma conta no dashboard, o sistema exibe a URL de callback que deve ser configurada no portal de desenvolvedores. Para produção, será algo como `https://seu-dominio.com/callback`. Para desenvolvimento local: `http://localhost:3000/callback`.
+
+---
+
+## Tipos de Conteúdo por Plataforma
+
+| Plataforma | Texto | Imagem | Vídeo | Carrossel | Observações |
+|------------|-------|--------|-------|-----------|-------------|
+| Instagram | Sim | Sim | Sim (Reels) | Até 10 itens | Conta Business/Creator necessária |
+| Facebook | Sim | Sim | Sim | — | Publica em Páginas |
+| Threads | Sim | Sim | — | Até 10 itens | — |
+| X (Twitter) | Sim | Até 4 | — | — | Limite de caracteres |
+| LinkedIn | Sim | Até 20 | — | — | Perfil pessoal |
+| LinkedIn Page | Sim | Até 20 | — | — | Páginas corporativas |
+| YouTube | — | — | Sim | — | Somente vídeo |
+| TikTok | — | — | Sim | — | Somente vídeo, HTTPS obrigatório |
+| Pinterest | Sim | Sim | — | — | Pins com imagem, Company Account |
+| Reddit | Sim | Sim | — | — | Em breve |
+| Discord | Sim | Sim | — | — | Em breve |
+| Telegram | Sim | Sim | — | — | Em breve |
+| Google My Business | Sim | Sim | — | — | Em breve |
+
+---
+
+## Segurança
+
+Todas as credenciais são **criptografadas com AES-256-GCM** antes de serem armazenadas no banco de dados. Tokens OAuth nunca são expostos no frontend. Consulte a [documentação de segurança](/docs) para mais detalhes.

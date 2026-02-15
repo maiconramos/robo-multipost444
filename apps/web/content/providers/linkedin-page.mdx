@@ -1,0 +1,127 @@
+---
+title: LinkedIn Page — Configuração Passo a Passo
+---
+
+# LinkedIn Page — Configuração Passo a Passo
+
+Este guia explica como conectar uma **Página de Empresa do LinkedIn** ao Robô MultiPost para publicar conteúdo corporativo.
+
+> **LinkedIn vs LinkedIn Page:** Este guia é para publicar em **Páginas de Empresa**. Para publicar no seu **perfil pessoal**, veja o guia [LinkedIn](/docs/providers/linkedin).
+
+---
+
+## Pré-requisitos
+
+- Uma **Página de Empresa no LinkedIn** que você administra
+- Uma **conta no LinkedIn** com permissão de **Administrador** ou **Super Administrador** da página
+- Acesso ao **LinkedIn Developers** — [linkedin.com/developers](https://www.linkedin.com/developers/)
+- O mesmo app OAuth usado para o LinkedIn pessoal pode ser reutilizado
+
+---
+
+## 1. Use o Mesmo App (ou Crie um Novo)
+
+Se você já configurou o [LinkedIn pessoal](/docs/providers/linkedin), pode usar o mesmo app. Caso contrário, siga os passos 1-4 do guia do LinkedIn.
+
+---
+
+## 2. Adicione Produtos para Pages
+
+Além dos produtos do LinkedIn pessoal, certifique-se de ter:
+
+| Produto | Descrição |
+|---------|-----------|
+| **Share on LinkedIn** | Permite publicar conteúdo |
+| **Sign In with LinkedIn using OpenID Connect** | Login OAuth |
+| **Advertising API** (recomendado) | Necessário para gerenciar tokens e pages |
+
+> **Nota:** Para publicar em LinkedIn Pages, pode ser necessário que o app tenha acesso à **Marketing Developer Platform** ou **Advertising API**. Solicite acesso e preencha o formulário.
+
+---
+
+## 3. Configure a URL de Redirecionamento
+
+Na aba **Auth**, adicione o callback URL (se ainda não adicionou):
+
+**Produção:**
+```
+https://seu-dominio.com/callback
+```
+
+**Desenvolvimento local:**
+```
+http://localhost:3000/callback
+```
+
+---
+
+## 4. Cadastre as Credenciais no Dashboard
+
+1. No Robô MultiPost, vá em **Contas** > **"Conectar Conta"**
+2. Selecione **LinkedIn** como plataforma
+3. Selecione o método **BYO OAuth**
+4. Preencha:
+   - **APP ID** — cole o Client ID
+   - **APP SECRET** — cole o Client Secret
+5. Clique em **Salvar**
+
+---
+
+## 5. Conecte a Página
+
+1. Clique em **"Conectar"** na conta cadastrada
+2. Autorize o acesso no LinkedIn
+3. Se possuir múltiplas páginas, selecione a desejada
+4. A página aparecerá na lista de contas conectadas
+
+---
+
+## Permissões Necessárias
+
+| Scope | Descrição |
+|-------|-----------|
+| `w_member_social` | Permite publicar conteúdo |
+| `r_liteprofile` | Acesso ao perfil do administrador |
+| `w_organization_social` | Publicar em páginas de empresa (via Advertising API) |
+| `r_organization_social` | Ler dados da página |
+
+> **Nota:** Scopes de organização requerem aprovação da **Marketing Developer Platform**.
+
+---
+
+## Tipos de Publicação Suportados
+
+| Tipo | Descrição | Requisitos |
+|------|-----------|------------|
+| **Texto** | Publicação com texto | — |
+| **Imagem** | Publicação com imagens | Até 20 imagens |
+| **Primeiro Comentário** | Comentário automático | Texto adicional |
+
+---
+
+## Diferenças do LinkedIn Pessoal
+
+| Aspecto | LinkedIn Pessoal | LinkedIn Page |
+|---------|-----------------|---------------|
+| **Destino** | Perfil pessoal | Página de empresa |
+| **Scopes** | `w_member_social` | `w_organization_social` |
+| **Aprovação** | Instantânea | Pode requerer Marketing Developer Platform |
+| **Administração** | Próprio perfil | Precisa ser admin da página |
+
+---
+
+## Solução de Problemas
+
+### Erro "Insufficient permissions for organization"
+- Verifique se você é **Administrador** ou **Super Administrador** da página
+- Confirme que o app tem acesso à Marketing Developer Platform
+- Solicite e aguarde aprovação do scope `w_organization_social`
+
+### Página não aparece na seleção
+- Confirme que sua conta LinkedIn é administradora da página
+- Verifique se a página está ativa (não desativada)
+
+### Token expira rapidamente
+- LinkedIn Pages segue a mesma política de tokens do LinkedIn pessoal
+- Solicite acesso à Advertising API para garantir refresh tokens
+- Desconecte e reconecte se o token expirar
